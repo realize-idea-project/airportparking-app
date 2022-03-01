@@ -1,0 +1,69 @@
+{
+  "parser": "@typescript-eslint/parser",
+  // "parserOptions": {
+  //   "project": "./tsconfig.json"
+  // },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "plugins": ["babel", "@typescript-eslint", "prettier"],
+  "rules": {
+    "react/prop-types": 0,
+    "react/jsx-wrap-multilines": 0,
+    "react/state-in-constructor": 0,
+    "react/forbid-prop-types": 0,
+    "no-param-reassign": 0,
+    "max-len": [
+      "error",
+      200,
+      2,
+      {
+        "ignoreUrls": true,
+        "ignoreTrailingComments": true
+      }
+    ],
+    "camelcase": 1,
+    "no-multiple-empty-lines": 0,
+    "no-use-before-define": 0,
+    "jsx-a11y/accessible-emoji": 0,
+    "consistent-return": 0,
+    "object-curly-newline": 0,
+    "react/jsx-fragments": 0,
+    "import/prefer-default-export": 0,
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    ],
+    "react/jsx-props-no-spreading": ["error", { "custom": "ignore" }],
+    "prettier/prettier": "error",
+    "import/no-unresolved": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      { "js": "never", "jsx": "never", "ts": "never", "tsx": "never", "json": "never" }
+    ],
+    "no-console": "off"
+  },
+  "extends": [
+    "airbnb",
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "moduleDirectory": ["node_modules", "."],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": {}
+    }
+  }
+}

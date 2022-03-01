@@ -1,0 +1,167 @@
+import React, { FC } from 'react';
+import { StyleSheet, Text, View, Pressable, FlatList, ScrollView } from 'react-native';
+import _ from 'lodash';
+import { DailychartProtocol } from './protocols';
+
+interface Props {
+  list: DailychartProtocol[];
+  onClickReset: () => void;
+  onClickSave: () => void;
+  onClickDelete: () => void;
+}
+
+export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onClickDelete }) => {
+  
+  if (_.isEmpty(list)) {
+    onClickReset();
+    return null;
+  }
+
+  return (
+    <>
+      <View style={{ height: 10 }}/>
+      <View style={styles.buttonContainer}>
+        <View style={styles.space}/>
+        <Pressable style={styles.button} onPress={onClickReset}>
+          <Text>날짜 다시 선택</Text>
+        </Pressable>
+        <View style={styles.space}/>
+        <Pressable style={styles.button} onPress={onClickSave}>
+          <Text>저장 하기</Text>
+        </Pressable>
+        <View style={styles.space}/>
+        <Pressable style={styles.button} onPress={onClickDelete}>
+          <Text>전화번호 지우기</Text>
+        </Pressable>
+        <View style={styles.space}/>
+      </View>
+      <View style={{ height: 10 }}/>
+      
+      <ScrollView style={{height: '100%'}}>
+        <FlatList
+          data={list}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item, index }) => <DailyChartItem item={item} index={index} /> }
+          contentContainerStyle={styles.listContentContainerStyle}
+          ListHeaderComponent={<DailyChartListHeader total={list.length}/>}
+          horizontal
+        />
+      </ScrollView>
+      <View style={{ height: 10 }}/>
+    </>
+  )
+};
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  button: {
+    flex: 1,
+    height: 40,
+    backgroundColor: '#dddddd',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  space: {
+    width: 10
+  },
+  listContentContainerStyle: {
+    flexDirection: 'column',
+    paddingBottom: 300,
+  }
+});
+
+interface HeaderProps {
+  total: number
+}
+
+const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
+  return (
+    <View style={[itemStyles.itemContainer, itemStyles.headerColor]}>
+      <Text style={[itemStyles.row, itemStyles.rowId]}>{total}</Text>
+      <Text style={[itemStyles.row, itemStyles.serviceType]}>입/출고</Text>
+      <Text style={[itemStyles.row, itemStyles.serviceTime]}>시간</Text>
+      <Text style={[itemStyles.row, itemStyles.carType]}>차종</Text>
+      <Text style={[itemStyles.row, itemStyles.plateNumber]}>차량 번호</Text>
+      <Text style={[itemStyles.row, itemStyles.contact]}>연락처</Text>
+      <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
+      <Text style={[itemStyles.row, itemStyles.note]}>비고</Text>
+      <Text style={[itemStyles.row, itemStyles.endDate]}>출고일</Text>
+    </View>
+  );
+};
+
+interface DailyChartItemProps {
+  item: DailychartProtocol;
+  index: number;
+}
+
+const DailyChartItem: FC<DailyChartItemProps> = ({ item, index }) => {
+  return (
+    <View style={itemStyles.itemContainer}>
+      <Text style={[itemStyles.row, itemStyles.rowId]}>{index + 1}</Text>
+      <Text style={[itemStyles.row, itemStyles.serviceType]}>{item.serviceType}</Text>
+      <Text style={[itemStyles.row, itemStyles.serviceTime]}>{item.serviceTime}</Text>
+      <Text style={[itemStyles.row, itemStyles.carType]}>{item.carType}</Text>
+      <Text style={[itemStyles.row, itemStyles.plateNumber]}>{item.plateNumber}</Text>
+      <Text style={[itemStyles.row, itemStyles.contact]}>{item.contactNumber}</Text>
+      <Text style={[itemStyles.row, itemStyles.charge]}>{item.serviceCharge}</Text>
+      <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text>
+      <Text style={[itemStyles.row, itemStyles.endDate]}>{item.serviceEndDate}</Text>
+    </View>
+  );
+};
+
+const itemStyles = StyleSheet.create({
+  itemContainer: {
+    flexDirection: 'row',
+  },
+  row: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    fontSize: 18,
+    borderWidth: 1,
+    alignItems: 'center',
+    textAlignVertical: 'center',
+  },
+  rowId: {
+    paddingHorizontal: 10,
+    width: 60,
+    textAlign: 'center'
+  },
+  serviceType: {
+    paddingHorizontal: 10,
+    width: 80,
+    textAlign: 'center'
+  },
+  serviceTime: {
+    paddingHorizontal: 10,
+    width: 80,
+    textAlign: 'center'
+  },
+  carType: {
+    width: 200,
+  },
+  plateNumber: {
+    width: 150,
+  },
+  contact: {
+    width: 180,
+  },
+  charge: {
+    width: 150,
+  },
+  note: {
+    width: 300,
+  },
+  endDate: {
+    width: 120,
+    textAlign: 'center',
+  },
+  headerColor: {
+    backgroundColor: '#dddddd'
+  }
+});
