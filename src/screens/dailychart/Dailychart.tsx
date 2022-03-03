@@ -7,7 +7,6 @@ import { DatePicker } from './DatePicker';
 import { DailyChartList } from './DailyChartList';
 import { useContactPermission } from './useContactPermission';
 import { useAcessContact } from './useAccessContacts';
-import Config from 'react-native-config';
 
 const screenHeight = Dimensions.get("window").height;
 
@@ -32,7 +31,6 @@ const DailyChart = () => {
 
   const onClickLoadButton = async (date: string) => {  
     try {
-      console.log('myappp', date);
       if (!isLoading) {
         setIsLoading(true);
         const list = await loadDailyChartList(date);
@@ -47,10 +45,8 @@ const DailyChart = () => {
         setIsLoading(false);
       }
     } catch (e) {
-      console.log('here', e)
       setIsLoading(false);
     }
-    
   };
 
   const onClickReset = () => {
@@ -81,9 +77,6 @@ const DailyChart = () => {
     <View>
       <View style={styles.header}>
         <Text style={styles.headerText}>일일 주차 예약 목록</Text>
-        <Text>{`${Config.ENV}`}</Text>
-        <Text>{`${Config.API_URL}`}</Text>
-
       </View>
       {_.isEmpty(reservationList) ? (
         <DatePicker 
@@ -92,7 +85,8 @@ const DailyChart = () => {
           onClickLoadButton={onClickLoadButton}
         />
       ) : (
-        <DailyChartList 
+        <DailyChartList
+          selectedDate={selectedDate}
           list={reservationList}
           onClickReset={onClickReset}
           onClickSave={onClickSaveButton}

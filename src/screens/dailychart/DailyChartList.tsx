@@ -1,20 +1,35 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text, View, Pressable, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, ScrollView, Alert } from 'react-native';
 import _ from 'lodash';
 import { DailychartProtocol } from './protocols';
 
 interface Props {
+  selectedDate: string
   list: DailychartProtocol[];
   onClickReset: () => void;
   onClickSave: () => void;
   onClickDelete: () => void;
 }
 
-export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onClickDelete }) => {
+export const DailyChartList: FC<Props> = ({ selectedDate, list, onClickReset, onClickSave, onClickDelete }) => {
   
   if (_.isEmpty(list)) {
     onClickReset();
     return null;
+  }
+
+  const handleClickDeleteButton = () => {
+    Alert.alert(
+      `${selectedDate} 예약목록의 전화번호가\n핸드폰에서 지워집니다.`,
+      '계속 진행하시겠습니까?',
+    [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+      },
+      { text: "OK", onPress: onClickDelete }
+    ])
   }
 
   return (
@@ -30,7 +45,7 @@ export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onC
           <Text>저장 하기</Text>
         </Pressable>
         <View style={styles.space}/>
-        <Pressable style={styles.button} onPress={onClickDelete}>
+        <Pressable style={styles.button} onPress={handleClickDeleteButton}>
           <Text>전화번호 지우기</Text>
         </Pressable>
         <View style={styles.space}/>
