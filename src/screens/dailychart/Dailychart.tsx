@@ -7,6 +7,7 @@ import { DatePicker } from './DatePicker';
 import { DailyChartList } from './DailyChartList';
 import { useContactPermission } from './useContactPermission';
 import { useAcessContact } from './useAccessContacts';
+import Config from 'react-native-config';
 
 const screenHeight = Dimensions.get("window").height;
 
@@ -30,19 +31,26 @@ const DailyChart = () => {
   };
 
   const onClickLoadButton = async (date: string) => {  
-    if (!isLoading) {
-      setIsLoading(true);
-      const list = await loadDailyChartList(date);
-      
-      if (_.isEmpty(list)) {
-        Alert.alert('해당 날짜에 예약이 없습니다. 날짜를 확인해주세요.');
+    try {
+      console.log('myappp', date);
+      if (!isLoading) {
+        setIsLoading(true);
+        const list = await loadDailyChartList(date);
+        
+        if (_.isEmpty(list)) {
+          Alert.alert('해당 날짜에 예약이 없습니다. 날짜를 확인해주세요.');
+          setIsLoading(false);
+          return;
+        }
+  
+        setReservationList(list);
         setIsLoading(false);
-        return;
       }
-
-      setReservationList(list);
+    } catch (e) {
+      console.log('here', e)
       setIsLoading(false);
     }
+    
   };
 
   const onClickReset = () => {
@@ -73,6 +81,9 @@ const DailyChart = () => {
     <View>
       <View style={styles.header}>
         <Text style={styles.headerText}>일일 주차 예약 목록</Text>
+        <Text>{`${Config.ENV}`}</Text>
+        <Text>{`${Config.API_URL}`}</Text>
+
       </View>
       {_.isEmpty(reservationList) ? (
         <DatePicker 

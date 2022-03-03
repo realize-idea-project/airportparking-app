@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "ENVFILE=.env.development react-native run-android && adb reverse tcp:3001 tcp:3001",
-    "android:prod": "ENVFILE=.env.production react-native run-android ",
+    "android:prod": "ENVFILE=.env.production react-native run-android",
     "build-android": "cd android && ENVFILE=.env.development ./gradlew assembleRelease",
     "build-android:prod": "cd android && ENVFILE=.env.production ./gradlew assembleRelease",
     "ios": "ENVFILE=.env.development react-native run-ios",
