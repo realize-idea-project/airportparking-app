@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Alert, ActivityIndicator, BackHandler } from 'react-native';
 import _ from 'lodash';
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
@@ -17,6 +17,20 @@ const DailyChart = () => {
 
   const { permissionStatus, requestPermissions } = useContactPermission();
   const { generateContacts, saveBulkContact, deleteAllContacts } = useAcessContact();
+
+  useEffect(() => {
+    const listener = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (_.isEmpty(reservationList)) {
+        return false;
+      } else {
+        setReservationList([]);
+        setSelectedDate(formatDate(new Date()));
+        return true;
+      }
+    });
+
+    return () => listener.remove();
+  }, [reservationList]);
 
   useEffect(() => {
     if (!_.isEmpty(reservationList)) {
