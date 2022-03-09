@@ -45,7 +45,7 @@ export const useAcessContact = () => {
       }
 
     } catch (e) {
-      console.log(e,'@@');
+      console.log(`An error occured while delete contact: `, e);
       return;
     }
   };
@@ -61,7 +61,7 @@ export const useAcessContact = () => {
   const generateContacts = (reservationList: DailychartProtocol[], selectedDate: string): GeneratedContact[] => {
     return reservationList.map((item) => {
       return {
-        givenName: `${item.plateNumber} ${item.carType}`,
+        givenName: `${item.carType} ${item.plateNumber}`,
         phoneNumbers: [{
           label: 'mobile',
           number: `${item.contactNumber}`,
