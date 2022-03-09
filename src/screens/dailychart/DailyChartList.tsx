@@ -170,7 +170,7 @@ const itemStyles = StyleSheet.create({
     width: 150,
   },
   note: {
-    width: 300,
+    width: 80,
   },
   endDate: {
     width: 120,
