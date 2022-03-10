@@ -113,8 +113,14 @@ interface DailyChartItemProps {
   item: DailychartProtocol;
   index: number;
 }
+const EXTERNAL_CHANNEL = '티몬';
 
 const DailyChartItem: FC<DailyChartItemProps> = ({ item, index }) => {
+
+  const serviceCharge = item.serviceCharge === 0
+    ? EXTERNAL_CHANNEL
+    : withThousandSparator(item.serviceCharge);
+
   return (
     <View style={itemStyles.itemContainer}>
       <Text style={[itemStyles.row, itemStyles.rowId]}>{index + 1}</Text>
@@ -123,11 +129,16 @@ const DailyChartItem: FC<DailyChartItemProps> = ({ item, index }) => {
       <Text style={[itemStyles.row, itemStyles.carType]}>{item.carType}</Text>
       <Text style={[itemStyles.row, itemStyles.plateNumber]}>{item.plateNumber}</Text>
       <Text style={[itemStyles.row, itemStyles.contact]}>{item.contactNumber}</Text>
-      <Text style={[itemStyles.row, itemStyles.charge]}>{item.serviceCharge}</Text>
+      <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text>
       <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text>
       <Text style={[itemStyles.row, itemStyles.endDate]}>{item.serviceEndDate}</Text>
     </View>
   );
+};
+
+const withThousandSparator = (amount: number) => {
+  var regexp = /\B(?=(\d{3})+(?!\d))/g;
+  return amount.toString().replace(regexp, ',');
 };
 
 const itemStyles = StyleSheet.create({
