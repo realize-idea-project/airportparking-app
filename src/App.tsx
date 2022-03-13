@@ -1,14 +1,6 @@
 import React from 'react';
 import Config from 'react-native-config';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
 
 import DailyChart from './screens/dailychart/Dailychart';
 

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { DailychartProtocol } from './protocols';
 
 interface Props {
-  selectedDate: string
+  selectedDate: string;
   list: DailychartProtocol[];
   onClickReset: () => void;
   onClickSave: () => void;
@@ -12,59 +12,55 @@ interface Props {
 }
 
 export const DailyChartList: FC<Props> = ({ selectedDate, list, onClickReset, onClickSave, onClickDelete }) => {
-  
   if (_.isEmpty(list)) {
     onClickReset();
     return null;
   }
 
   const handleClickDeleteButton = () => {
-    Alert.alert(
-      `${selectedDate} 예약목록의 전화번호가\n핸드폰에서 지워집니다.`,
-      '계속 진행하시겠습니까?',
-    [
+    Alert.alert(`${selectedDate} 예약목록의 전화번호가\n핸드폰에서 지워집니다.`, '계속 진행하시겠습니까?', [
       {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel"
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
       },
-      { text: "OK", onPress: onClickDelete }
-    ])
-  }
+      { text: 'OK', onPress: onClickDelete },
+    ]);
+  };
 
   return (
     <>
-      <View style={{ height: 10 }}/>
+      <View style={{ height: 10 }} />
       <View style={styles.buttonContainer}>
-        <View style={styles.space}/>
+        <View style={styles.space} />
         <Pressable style={styles.button} onPress={onClickReset}>
           <Text>날짜 다시 선택</Text>
         </Pressable>
-        <View style={styles.space}/>
+        <View style={styles.space} />
         <Pressable style={styles.button} onPress={onClickSave}>
           <Text>저장 하기</Text>
         </Pressable>
-        <View style={styles.space}/>
+        <View style={styles.space} />
         <Pressable style={styles.button} onPress={handleClickDeleteButton}>
           <Text>전화번호 지우기</Text>
         </Pressable>
-        <View style={styles.space}/>
+        <View style={styles.space} />
       </View>
-      <View style={{ height: 10 }}/>
-      
-      <ScrollView style={{height: '100%'}}>
+      <View style={{ height: 10 }} />
+
+      <ScrollView style={{ height: '100%' }}>
         <FlatList
           data={list}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item, index }) => <DailyChartItem item={item} index={index} /> }
+          renderItem={({ item, index }) => <DailyChartItem item={item} index={index} />}
           contentContainerStyle={styles.listContentContainerStyle}
-          ListHeaderComponent={<DailyChartListHeader total={list.length}/>}
+          ListHeaderComponent={<DailyChartListHeader total={list.length} />}
           horizontal
         />
       </ScrollView>
-      <View style={{ height: 10 }}/>
+      <View style={{ height: 10 }} />
     </>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
@@ -81,16 +77,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   space: {
-    width: 10
+    width: 10,
   },
   listContentContainerStyle: {
     flexDirection: 'column',
     paddingBottom: 300,
-  }
+  },
 });
 
 interface HeaderProps {
-  total: number
+  total: number;
 }
 
 const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
@@ -116,10 +112,7 @@ interface DailyChartItemProps {
 const EXTERNAL_CHANNEL = '티몬';
 
 const DailyChartItem: FC<DailyChartItemProps> = ({ item, index }) => {
-
-  const serviceCharge = item.serviceCharge === 0
-    ? EXTERNAL_CHANNEL
-    : withThousandSparator(item.serviceCharge);
+  const serviceCharge = item.serviceCharge === 0 ? EXTERNAL_CHANNEL : withThousandSparator(item.serviceCharge);
 
   return (
     <View style={itemStyles.itemContainer}>
@@ -156,17 +149,17 @@ const itemStyles = StyleSheet.create({
   rowId: {
     paddingHorizontal: 10,
     width: 60,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   serviceType: {
     paddingHorizontal: 10,
     width: 80,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   serviceTime: {
     paddingHorizontal: 10,
     width: 80,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   carType: {
     width: 200,
@@ -188,6 +181,6 @@ const itemStyles = StyleSheet.create({
     textAlign: 'center',
   },
   headerColor: {
-    backgroundColor: '#dddddd'
-  }
+    backgroundColor: '#dddddd',
+  },
 });

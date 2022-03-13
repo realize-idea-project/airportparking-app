@@ -16,23 +16,23 @@ export const DatePicker: FC<Props> = ({ selectedDate, changeDate, onClickLoadBut
     _.throttle(() => {
       onClickLoadButton(selectedDate);
     }, delay),
-  [selectedDate]);
+    [selectedDate],
+  );
 
   return (
     <View>
-      <View style={{ height: 30 }}/>
+      <View style={{ height: 30 }} />
       <View>
-        <CalendarPicker onDateChange={changeDate as unknown as DateChangedCallback}/>
+        <CalendarPicker onDateChange={changeDate as unknown as DateChangedCallback} />
       </View>
-      <View style={{ height: 30 }}/>
+      <View style={{ height: 30 }} />
       <View style={styles.dateContainer}>
         <Text style={styles.dateText}>{`${selectedDate}`}</Text>
       </View>
-      <View style={{ height: 30 }}/>
+      <View style={{ height: 30 }} />
       <Pressable style={styles.button} onPress={handleClickLoadButton}>
         <Text style={styles.buttonText}>목록 가져오기</Text>
       </Pressable>
-      
     </View>
   );
 };
@@ -57,5 +57,5 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 20,
-  }
+  },
 });

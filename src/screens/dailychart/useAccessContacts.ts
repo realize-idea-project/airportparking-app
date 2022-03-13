@@ -13,7 +13,6 @@ interface PhoneNumber {
 }
 
 export const useAcessContact = () => {
-  
   const getAllContacts = async () => {
     const allContacts = await Contacts.getAll();
     return allContacts;
@@ -22,7 +21,7 @@ export const useAcessContact = () => {
   const saveBulkContact = async (contact: GeneratedContact[]) => {
     for (let i = 0; i < contact.length; i++) {
       await saveContact(contact[i]);
-      console.log('finished :', i, contact.length)
+      console.log('finished :', i, contact.length);
     }
   };
 
@@ -38,12 +37,11 @@ export const useAcessContact = () => {
     try {
       const list = await getAllContacts();
       const filteredList = list.filter((item) => item.note === selectedDate);
-      
+
       for (let i = 0; i < filteredList.length; i++) {
         await deleteContact(filteredList[i]);
         console.log('finished :', i, filteredList.length);
       }
-
     } catch (e) {
       console.log(`An error occured while delete contact: `, e);
       return;
@@ -62,16 +60,18 @@ export const useAcessContact = () => {
     return reservationList.map((item) => {
       return {
         givenName: `${item.carType} ${item.plateNumber}`,
-        phoneNumbers: [{
-          label: 'mobile',
-          number: `${item.contactNumber}`,
-        }],
+        phoneNumbers: [
+          {
+            label: 'mobile',
+            number: `${item.contactNumber}`,
+          },
+        ],
         note: selectedDate,
-      }
+      };
     });
   };
 
-  return { 
+  return {
     getAllContacts,
     saveContact,
     deleteContact,
@@ -80,8 +80,6 @@ export const useAcessContact = () => {
     deleteAllContacts,
   };
 };
-
-
 
 // {
 //   recordID: '6b2237ee0df85980',
