@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Dimensions, Alert, ActivityIndicator, BackHandler } from 'react-native';
 import _ from 'lodash';
+import SendSMS from 'react-native-sms';
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
 import { DatePicker } from './DatePicker';
@@ -9,6 +10,7 @@ import { useContactPermission } from './useContactPermission';
 import { useAcessContact } from './useAccessContacts';
 
 const screenHeight = Dimensions.get('window').height;
+const SERVICE_IN = '입고';
 
 const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
@@ -43,7 +45,7 @@ const DailyChart = () => {
     setSelectedDate(formattedDate);
   };
 
-  const onClickLoadButton = async (date: string) => {
+  const LoadChart = async (date: string) => {
     try {
       if (!isLoading) {
         setIsLoading(true);
@@ -63,12 +65,12 @@ const DailyChart = () => {
     }
   };
 
-  const onClickReset = () => {
+  const resetChart = () => {
     setReservationList([]);
     setSelectedDate(formatDate(new Date()));
   };
 
-  const onClickSaveButton = async () => {
+  const saveMobileNumbers = async () => {
     if (!isLoading && permissionStatus === 'granted') {
       setIsLoading(true);
       const newContactsList = generateContacts(reservationList, selectedDate);
@@ -78,7 +80,7 @@ const DailyChart = () => {
     }
   };
 
-  const onClickDeleteButton = async () => {
+  const deleteMobileNumbers = async () => {
     if (!isLoading && permissionStatus === 'granted') {
       setIsLoading(true);
       await deleteAllContacts(selectedDate);
@@ -87,20 +89,26 @@ const DailyChart = () => {
     }
   };
 
+  const sendSms = () => {
+    const serviceInUsers = getServiceInUserlist(reservationList);
+    openSmsApp(serviceInUsers);
+  };
+
   return (
     <View>
       <View style={styles.header}>
         <Text style={styles.headerText}>일일 주차 예약 목록</Text>
       </View>
       {_.isEmpty(reservationList) ? (
-        <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={onClickLoadButton} />
+        <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={LoadChart} />
       ) : (
         <DailyChartList
           selectedDate={selectedDate}
           list={reservationList}
-          onClickReset={onClickReset}
-          onClickSave={onClickSaveButton}
-          onClickDelete={onClickDeleteButton}
+          onClickReset={resetChart}
+          onClickSave={saveMobileNumbers}
+          onClickDelete={deleteMobileNumbers}
+          onClickSend={sendSms}
         />
       )}
 
@@ -115,6 +123,30 @@ const DailyChart = () => {
 
 const formatDate = (date: Date) => {
   return date.toISOString().slice(0, 10);
+};
+
+const getServiceInUserlist = (wholeList: DailychartProtocol[]) => {
+  return wholeList
+    .filter((user) => user.serviceType === SERVICE_IN)
+    .map((user) => user.contactNumber)
+    .map((contact) => contact.split('-'))
+    .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`));
+};
+
+const openSmsApp = (mobiles: string[]) => {
+  if (_.isEmpty(mobiles)) return;
+
+  SendSMS.send(
+    {
+      body: '김포공항 주차대행 입니다 국내선 출발 2층 1번 게이트로 오세요 도착 10분전에 전화주세요',
+      recipients: mobiles,
+      successTypes: ['sent', 'queued'],
+      allowAndroidSendWithoutReadPermission: true,
+    },
+    (completed, cancelled, error) => {
+      console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+    },
+  );
 };
 
 const styles = StyleSheet.create({
