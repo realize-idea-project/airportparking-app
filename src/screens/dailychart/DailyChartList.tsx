@@ -21,6 +21,7 @@ export const DailyChartList: FC<Props> = ({
   onClickSend,
 }) => {
   if (_.isEmpty(list)) {
+    Alert.alert('해당 날짜의 리스트가 없습니다.');
     onClickReset();
     return null;
   }
@@ -42,8 +43,8 @@ export const DailyChartList: FC<Props> = ({
       <View>
         <View style={styles.buttonContainer}>
           <View style={styles.space} />
-          <Pressable style={styles.button} onPress={onClickReset}>
-            <Text>날짜 다시 선택</Text>
+          <Pressable style={styles.button} onPress={onClickSend}>
+            <Text>입고 메세지 보내기</Text>
           </Pressable>
           <View style={styles.space} />
           <Pressable style={styles.button} onPress={onClickSave}>
@@ -52,22 +53,6 @@ export const DailyChartList: FC<Props> = ({
           <View style={styles.space} />
           <Pressable style={styles.button} onPress={handleClickDeleteButton}>
             <Text>전화번호 지우기</Text>
-          </Pressable>
-          <View style={styles.space} />
-        </View>
-        <View style={{ height: 10 }} />
-        <View style={styles.buttonContainer}>
-          <View style={styles.space} />
-          <Pressable style={styles.button} onPress={onClickSend}>
-            <Text>입고 메세지 보내기</Text>
-          </Pressable>
-          <View style={styles.space} />
-          <Pressable style={[styles.button, { opacity: 0 }]} onPress={() => null}>
-            <Text></Text>
-          </Pressable>
-          <View style={styles.space} />
-          <Pressable style={[styles.button, { opacity: 0 }]} onPress={() => null}>
-            <Text></Text>
           </Pressable>
           <View style={styles.space} />
         </View>

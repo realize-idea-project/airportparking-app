@@ -99,24 +99,28 @@ const DailyChart = ({ navigation }) => {
     }
   };
 
-  const sendSms = () => {
-    const serviceInUsers = getServiceInUserlist(reservationList);
-    openSmsApp(serviceInUsers);
-  };
+  const showLoading = () => setIsLoading(true);
+  const hideLoading = () => setIsLoading(false);
 
-  const test = () => {
-    console.log('hi');
-    navigation.navigate('ServiceIn');
+  const sendSms = () => {
+    showLoading();
+    const serviceInUsers = getServiceInUserlist(reservationList);
+
+    try {
+      openSmsApp(serviceInUsers, hideLoading);
+    } catch (e) {
+      hideLoading();
+    }
   };
 
   return (
     <SafeAreaView>
       <View>
         <View style={styles.header}>
-          <Text style={styles.headerText}>일일 주차 예약 목록</Text>
-          <Pressable onPress={test}>
-            <Text>move</Text>
+          <Pressable style={styles.goBack} onPress={resetChart}>
+            <Text style={styles.backText}>뒤로 가기</Text>
           </Pressable>
+          <Text style={styles.headerText}>일일 주차 예약 목록</Text>
         </View>
         {_.isEmpty(reservationList) ? (
           <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={LoadChart} />
@@ -153,7 +157,7 @@ const getServiceInUserlist = (wholeList: DailychartProtocol[]) => {
     .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`));
 };
 
-const openSmsApp = (mobiles: string[]) => {
+const openSmsApp = (mobiles: string[], cb: () => void) => {
   if (_.isEmpty(mobiles)) return;
 
   SendSMS.send(
@@ -165,6 +169,7 @@ const openSmsApp = (mobiles: string[]) => {
     },
     (completed, cancelled, error) => {
       console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+      cb();
     },
   );
 };
@@ -180,6 +185,14 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: '700',
+  },
+  goBack: {
+    position: 'absolute',
+    left: 20,
+  },
+  backText: {
+    fontSize: 14,
+    color: 'black',
   },
   loadingView: {
     position: 'absolute',
