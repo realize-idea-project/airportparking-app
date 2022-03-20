@@ -89,9 +89,18 @@ const DailyChart = () => {
     }
   };
 
+  const showLoading = () => setIsLoading(true);
+  const hideLoading = () => setIsLoading(false);
+
   const sendSms = () => {
+    showLoading();
     const serviceInUsers = getServiceInUserlist(reservationList);
-    openSmsApp(serviceInUsers);
+
+    try {
+      openSmsApp(serviceInUsers, hideLoading);
+    } catch (e) {
+      hideLoading();
+    }
   };
 
   return (
@@ -133,7 +142,7 @@ const getServiceInUserlist = (wholeList: DailychartProtocol[]) => {
     .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`));
 };
 
-const openSmsApp = (mobiles: string[]) => {
+const openSmsApp = (mobiles: string[], cb: () => void) => {
   if (_.isEmpty(mobiles)) return;
 
   SendSMS.send(
@@ -145,6 +154,7 @@ const openSmsApp = (mobiles: string[]) => {
     },
     (completed, cancelled, error) => {
       console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+      cb();
     },
   );
 };
