@@ -18,6 +18,10 @@ import { DatePicker } from './DatePicker';
 import { DailyChartList } from './DailyChartList';
 import { useContactPermission } from './useContactPermission';
 import { useAcessContact } from './useAccessContacts';
+import { useSMS } from './useSMS';
+
+import { Modal } from '../../components/Modals/Modal';
+import { ServiceInModalContents } from './ServiceInModalContents';
 
 const screenHeight = Dimensions.get('window').height;
 const SERVICE_IN = '입고';
@@ -26,9 +30,11 @@ const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const { permissionStatus, requestPermissions } = useContactPermission();
   const { generateContacts, saveBulkContact } = useAcessContact();
+  const { openSmsApp } = useSMS();
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -93,7 +99,7 @@ const DailyChart = () => {
   const showLoading = () => setIsLoading(true);
   const hideLoading = () => setIsLoading(false);
 
-  const sendSms = () => {
+  const sendSmsAll = () => {
     showLoading();
     const serviceInUsers = getServiceInUserlist(reservationList);
 
@@ -103,6 +109,8 @@ const DailyChart = () => {
       hideLoading();
     }
   };
+
+  const sendSmsWithPic = () => {};
 
   return (
     <SafeAreaView>
@@ -121,8 +129,8 @@ const DailyChart = () => {
             list={reservationList}
             onClickReset={resetChart}
             onClickSave={saveMobileNumbers}
-            onClickSendAll={sendSms}
-            onClickSendWithPic={() => null}
+            onClickSendAll={sendSmsAll}
+            onClickSendWithPic={sendSmsWithPic}
           />
         )}
 
@@ -131,6 +139,7 @@ const DailyChart = () => {
             <ActivityIndicator size="large" style={styles.indicator} />
           </View>
         )}
+        {/* <Modal contents={() => <ServiceInModalContents />} /> */}
       </View>
     </SafeAreaView>
   );
@@ -146,23 +155,6 @@ const getServiceInUserlist = (wholeList: DailychartProtocol[]) => {
     .map((user) => user.contactNumber)
     .map((contact) => contact.split('-'))
     .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`));
-};
-
-const openSmsApp = (mobiles: string[], cb: () => void) => {
-  if (_.isEmpty(mobiles)) return;
-
-  SendSMS.send(
-    {
-      body: '김포공항 주차대행 입니다 국내선 출발 2층 1번 게이트로 오세요 도착 10분전에 전화주세요',
-      recipients: mobiles,
-      successTypes: ['sent', 'queued'],
-      allowAndroidSendWithoutReadPermission: true,
-    },
-    (completed, cancelled, error) => {
-      console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
-      cb();
-    },
-  );
 };
 
 const styles = StyleSheet.create({
