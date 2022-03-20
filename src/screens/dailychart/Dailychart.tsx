@@ -8,7 +8,7 @@ import { DailyChartList } from './DailyChartList';
 import { useContactPermission } from './useContactPermission';
 import { useAcessContact } from './useAccessContacts';
 
-const screenHeight = Dimensions.get("window").height;
+const screenHeight = Dimensions.get('window').height;
 
 const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
@@ -36,25 +36,25 @@ const DailyChart = () => {
     if (!_.isEmpty(reservationList)) {
       requestPermissions();
     }
-  }, [reservationList])
-  
+  }, [reservationList]);
+
   const changeDate = (targetDate: Date) => {
     const formattedDate = formatDate(new Date(targetDate));
     setSelectedDate(formattedDate);
   };
 
-  const onClickLoadButton = async (date: string) => {  
+  const onClickLoadButton = async (date: string) => {
     try {
       if (!isLoading) {
         setIsLoading(true);
         const list = await loadDailyChartList(date);
-        
+
         if (_.isEmpty(list)) {
           Alert.alert('해당 날짜에 예약이 없습니다. 날짜를 확인해주세요.');
           setIsLoading(false);
           return;
         }
-  
+
         setReservationList(list);
         setIsLoading(false);
       }
@@ -86,18 +86,14 @@ const DailyChart = () => {
       setIsLoading(false);
     }
   };
-  
-  return (   
+
+  return (
     <View>
       <View style={styles.header}>
         <Text style={styles.headerText}>일일 주차 예약 목록</Text>
       </View>
       {_.isEmpty(reservationList) ? (
-        <DatePicker 
-          selectedDate={selectedDate}
-          changeDate={changeDate} 
-          onClickLoadButton={onClickLoadButton}
-        />
+        <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={onClickLoadButton} />
       ) : (
         <DailyChartList
           selectedDate={selectedDate}
@@ -107,13 +103,12 @@ const DailyChart = () => {
           onClickDelete={onClickDeleteButton}
         />
       )}
-      
+
       {isLoading && (
         <View style={styles.loadingView}>
-          <ActivityIndicator size='large' style={styles.indicator} />
+          <ActivityIndicator size="large" style={styles.indicator} />
         </View>
       )}
-      
     </View>
   );
 };
@@ -134,7 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
   },
-  loadingView: { 
+  loadingView: {
     position: 'absolute',
     height: screenHeight,
     width: '100%',
@@ -144,8 +139,7 @@ const styles = StyleSheet.create({
   },
   indicator: {
     top: '40%',
-    
-  }
+  },
 });
 
 export default DailyChart;

@@ -3,7 +3,10 @@ import { Platform } from 'react-native';
 import { checkMultiple, Permission, requestMultiple, PERMISSIONS } from 'react-native-permissions';
 import _ from 'lodash';
 
-const permissionOfContacts: Permission[] = Platform.OS === 'ios' ? [PERMISSIONS.IOS.CONTACTS] : [PERMISSIONS.ANDROID.READ_CONTACTS, PERMISSIONS.ANDROID.WRITE_CONTACTS];
+const permissionOfContacts: Permission[] =
+  Platform.OS === 'ios'
+    ? [PERMISSIONS.IOS.CONTACTS]
+    : [PERMISSIONS.ANDROID.READ_CONTACTS, PERMISSIONS.ANDROID.WRITE_CONTACTS];
 
 export type PermissionGrantType = 'checking' | 'granted' | 'denied';
 
