@@ -19,7 +19,6 @@ import { DailyChartList } from './DailyChartList';
 import { useContactPermission } from './useContactPermission';
 import { useAcessContact } from './useAccessContacts';
 import { useSMS } from './useSMS';
-import { RNCamera, FaceDetector } from 'react-native-camera';
 
 import { Modal } from '../../components/Modals/Modal';
 import { ServiceInModalContents } from './ServiceInModalContents';
@@ -33,7 +32,7 @@ const DailyChart = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const { permissionStatus, requestPermissions } = useContactPermission();
+  const { requestPermissions } = useContactPermission();
   const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
   const { openSmsApp } = useSMS();
 
@@ -49,12 +48,6 @@ const DailyChart = () => {
     });
 
     return () => listener.remove();
-  }, [reservationList]);
-
-  useEffect(() => {
-    if (!_.isEmpty(reservationList)) {
-      requestPermissions(permissionsForContact);
-    }
   }, [reservationList]);
 
   const changeDate = (targetDate: Date) => {
@@ -88,7 +81,9 @@ const DailyChart = () => {
   };
 
   const saveMobileNumbers = async () => {
-    if (!isLoading && permissionStatus === 'granted') {
+    const isPermissionAccepted = await requestPermissions(permissionsForContact);
+
+    if (!isLoading && isPermissionAccepted) {
       setIsLoading(true);
       const newContactsList = generateContacts(reservationList, selectedDate);
       await saveBulkContact(newContactsList);
