@@ -2,7 +2,7 @@ import React from 'react';
 import Config from 'react-native-config';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
 
-import DailyChart from './screens/dailychart/Dailychart';
+import DailyChart from './screens/Dailychart/Dailychart';
 
 const App = () => {
   console.log(Config.ENV);
