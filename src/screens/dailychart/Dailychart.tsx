@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions, Alert, ActivityIndicator, BackHandler } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Alert, ActivityIndicator, BackHandler, Pressable } from 'react-native';
 import _ from 'lodash';
 import SendSMS from 'react-native-sms';
 import { loadDailyChartList } from '../../apis';
@@ -106,6 +106,9 @@ const DailyChart = () => {
   return (
     <View>
       <View style={styles.header}>
+        <Pressable style={styles.goBack} onPress={resetChart}>
+          <Text style={styles.backText}>뒤로 가기</Text>
+        </Pressable>
         <Text style={styles.headerText}>일일 주차 예약 목록</Text>
       </View>
       {_.isEmpty(reservationList) ? (
@@ -170,6 +173,14 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: '700',
+  },
+  goBack: {
+    position: 'absolute',
+    left: 20,
+  },
+  backText: {
+    fontSize: 14,
+    color: 'black',
   },
   loadingView: {
     position: 'absolute',
