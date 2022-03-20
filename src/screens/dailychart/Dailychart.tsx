@@ -22,13 +22,13 @@ import { useAcessContact } from './useAccessContacts';
 const screenHeight = Dimensions.get('window').height;
 const SERVICE_IN = '입고';
 
-const DailyChart = ({ navigation }) => {
+const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
   const [isLoading, setIsLoading] = useState(false);
 
   const { permissionStatus, requestPermissions } = useContactPermission();
-  const { generateContacts, saveBulkContact, deleteAllContacts } = useAcessContact();
+  const { generateContacts, saveBulkContact } = useAcessContact();
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -90,15 +90,6 @@ const DailyChart = ({ navigation }) => {
     }
   };
 
-  const deleteMobileNumbers = async () => {
-    if (!isLoading && permissionStatus === 'granted') {
-      setIsLoading(true);
-      await deleteAllContacts(selectedDate);
-      Alert.alert('번호 삭제가 완료되었습니다.');
-      setIsLoading(false);
-    }
-  };
-
   const showLoading = () => setIsLoading(true);
   const hideLoading = () => setIsLoading(false);
 
@@ -130,8 +121,8 @@ const DailyChart = ({ navigation }) => {
             list={reservationList}
             onClickReset={resetChart}
             onClickSave={saveMobileNumbers}
-            onClickDelete={deleteMobileNumbers}
-            onClickSend={sendSms}
+            onClickSendAll={sendSms}
+            onClickSendWithPic={() => null}
           />
         )}
 
