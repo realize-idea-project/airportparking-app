@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions, Alert, ActivityIndicator, BackHandler, Pressable } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Alert,
+  ActivityIndicator,
+  BackHandler,
+  Pressable,
+} from 'react-native';
 import _ from 'lodash';
 import SendSMS from 'react-native-sms';
 import { loadDailyChartList } from '../../apis';
@@ -12,7 +22,7 @@ import { useAcessContact } from './useAccessContacts';
 const screenHeight = Dimensions.get('window').height;
 const SERVICE_IN = '입고';
 
-const DailyChart = () => {
+const DailyChart = ({ navigation }) => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
   const [isLoading, setIsLoading] = useState(false);
@@ -104,32 +114,34 @@ const DailyChart = () => {
   };
 
   return (
-    <View>
-      <View style={styles.header}>
-        <Pressable style={styles.goBack} onPress={resetChart}>
-          <Text style={styles.backText}>뒤로 가기</Text>
-        </Pressable>
-        <Text style={styles.headerText}>일일 주차 예약 목록</Text>
-      </View>
-      {_.isEmpty(reservationList) ? (
-        <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={LoadChart} />
-      ) : (
-        <DailyChartList
-          selectedDate={selectedDate}
-          list={reservationList}
-          onClickReset={resetChart}
-          onClickSave={saveMobileNumbers}
-          onClickDelete={deleteMobileNumbers}
-          onClickSend={sendSms}
-        />
-      )}
-
-      {isLoading && (
-        <View style={styles.loadingView}>
-          <ActivityIndicator size="large" style={styles.indicator} />
+    <SafeAreaView>
+      <View>
+        <View style={styles.header}>
+          <Pressable style={styles.goBack} onPress={resetChart}>
+            <Text style={styles.backText}>뒤로 가기</Text>
+          </Pressable>
+          <Text style={styles.headerText}>일일 주차 예약 목록</Text>
         </View>
-      )}
-    </View>
+        {_.isEmpty(reservationList) ? (
+          <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={LoadChart} />
+        ) : (
+          <DailyChartList
+            selectedDate={selectedDate}
+            list={reservationList}
+            onClickReset={resetChart}
+            onClickSave={saveMobileNumbers}
+            onClickDelete={deleteMobileNumbers}
+            onClickSend={sendSms}
+          />
+        )}
+
+        {isLoading && (
+          <View style={styles.loadingView}>
+            <ActivityIndicator size="large" style={styles.indicator} />
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
