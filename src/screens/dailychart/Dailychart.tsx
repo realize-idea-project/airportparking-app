@@ -11,6 +11,7 @@ import {
   Pressable,
 } from 'react-native';
 import _ from 'lodash';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
@@ -34,7 +35,7 @@ const DailyChart = () => {
 
   const { requestPermissions } = usePermission();
   const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
-  const { openSmsApp } = useSMS();
+  const { openSmsApp, openSmsAppWithPic } = useSMS();
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -107,7 +108,12 @@ const DailyChart = () => {
   };
 
   const sendSmsWithPic = async () => {
-    console.log('test');
+    const photo = await launchCamera({
+      mediaType: 'photo',
+      // saveToPhotos: true,
+    });
+    console.log(photo, 'photo');
+    openSmsAppWithPic(['1'], photo, hideLoading);
   };
 
   return (

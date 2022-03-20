@@ -5759,6 +5759,11 @@ react-native-contacts@^7.0.4:
   resolved "https://registry.npmjs.org/react-native-contacts/-/react-native-contacts-7.0.4.tgz"
   integrity sha512-x6K9TMC0XBH/yyfqYh5BGS9JI1PpA2Ac/XHVVFVP8F8lPLNexQ0qPsNBo1cy9l2pPqlijpC33+FU0ty/N5iOWA==
 
+react-native-image-picker@^4.7.3:
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.7.3.tgz#f5863b27bf2e76c83649dd8efea4598426bd04e8"
+  integrity sha512-eRKm4wlsmZHmsWFyv77kYc2F+ZyEVqe0m7mqhsMzWk6TQT4FBDtEDxmRDDFq+ivCu/1QD+EPhmYcAIpeGr7Ekg==
+
 react-native-permissions@^3.3.0:
   version "3.3.0"
   resolved "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-3.3.0.tgz"
