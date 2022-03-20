@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Platform } from 'react-native';
-import { checkMultiple, Permission, requestMultiple, PERMISSIONS } from 'react-native-permissions';
+import { useState } from 'react';
+import { checkMultiple, Permission, requestMultiple } from 'react-native-permissions';
 import _ from 'lodash';
 
 export type PermissionGrantType = 'checking' | 'granted' | 'denied';
 
-export const useContactPermission = () => {
+export const usePermission = () => {
   const [permissionStatus, setPermissionStatus] = useState<PermissionGrantType>('checking');
 
   const checkAndRequestPermissions = async (permissions: Permission[]) => {

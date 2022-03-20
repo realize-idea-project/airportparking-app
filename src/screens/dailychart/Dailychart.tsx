@@ -16,7 +16,7 @@ import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
 import { DatePicker } from './DatePicker';
 import { DailyChartList } from './DailyChartList';
-import { useContactPermission } from './useContactPermission';
+import { usePermission } from './usePermission';
 import { useAcessContact } from './useAccessContacts';
 import { useSMS } from './useSMS';
 
@@ -32,7 +32,7 @@ const DailyChart = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const { requestPermissions } = useContactPermission();
+  const { requestPermissions } = usePermission();
   const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
   const { openSmsApp } = useSMS();
 
