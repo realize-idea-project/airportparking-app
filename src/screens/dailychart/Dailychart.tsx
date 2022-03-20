@@ -11,7 +11,7 @@ import {
   Pressable,
 } from 'react-native';
 import _ from 'lodash';
-import SendSMS from 'react-native-sms';
+
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
 import { DatePicker } from './DatePicker';
@@ -19,6 +19,7 @@ import { DailyChartList } from './DailyChartList';
 import { useContactPermission } from './useContactPermission';
 import { useAcessContact } from './useAccessContacts';
 import { useSMS } from './useSMS';
+import { RNCamera, FaceDetector } from 'react-native-camera';
 
 import { Modal } from '../../components/Modals/Modal';
 import { ServiceInModalContents } from './ServiceInModalContents';
@@ -33,7 +34,7 @@ const DailyChart = () => {
   const [showModal, setShowModal] = useState(false);
 
   const { permissionStatus, requestPermissions } = useContactPermission();
-  const { generateContacts, saveBulkContact } = useAcessContact();
+  const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
   const { openSmsApp } = useSMS();
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const DailyChart = () => {
 
   useEffect(() => {
     if (!_.isEmpty(reservationList)) {
-      requestPermissions();
+      requestPermissions(permissionsForContact);
     }
   }, [reservationList]);
 
@@ -110,16 +111,23 @@ const DailyChart = () => {
     }
   };
 
-  const sendSmsWithPic = () => {};
+  const sendSmsWithPic = async () => {
+    console.log('test');
+  };
 
   return (
     <SafeAreaView>
       <View>
         <View style={styles.header}>
-          <Pressable style={styles.goBack} onPress={resetChart}>
-            <Text style={styles.backText}>뒤로 가기</Text>
-          </Pressable>
+          {!_.isEmpty(reservationList) && (
+            <Pressable style={styles.goBack} onPress={resetChart}>
+              <Text style={styles.backText}>뒤로 가기</Text>
+            </Pressable>
+          )}
           <Text style={styles.headerText}>일일 주차 예약 목록</Text>
+          <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
+            <Text>test</Text>
+          </Pressable>
         </View>
         {_.isEmpty(reservationList) ? (
           <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={LoadChart} />
