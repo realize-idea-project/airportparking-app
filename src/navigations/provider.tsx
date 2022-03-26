@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { navigationDefinitions } from './routes';
 import _ from 'lodash';
 
-const INITIAL_ROUTE = 'DatePicker';
+const INITIAL_ROUTE = 'DailyChart';
 
 const AppNavigation = {
   Stack: createNativeStackNavigator(),
