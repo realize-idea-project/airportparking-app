@@ -2,37 +2,18 @@ import React, { FC } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import DailyChart from './Dailychart/Dailychart';
-import { DatePicker } from './Dailychart/DatePicker';
+import { navigationDefinitions } from './routes';
 import _ from 'lodash';
 
-interface ScreenDefinition {
-  id: string;
-  routes: Screen[];
-}
-interface Screen {
-  name: string;
-  component: FC<any>;
-  options?: any;
-}
-
-const DailyChartScreenDefinition = {
-  id: 'DailyChart',
-  routes: [
-    { name: 'DailyChart', component: DailyChart, options: {} },
-    { name: 'DatePicker', component: DatePicker, options: {} },
-  ],
-};
-
-const screenDefinitions: ScreenDefinition[] = [DailyChartScreenDefinition];
+const INITIAL_ROUTE = 'DatePicker';
 
 const AppNavigation = {
   Stack: createNativeStackNavigator(),
   navigatorOptions: {
     screenOptions: { headerShown: false },
-    initialRouteName: 'DatePicker',
+    initialRouteName: INITIAL_ROUTE,
   },
-  routes: _.flatMap(screenDefinitions, ({ routes }) => routes),
+  routes: _.flatMap(navigationDefinitions, ({ routes }) => routes),
 };
 
 const AppNavigationProvider = () => {
