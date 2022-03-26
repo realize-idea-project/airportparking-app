@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList, ScrollView, Alert } from 'react-native';
 import _ from 'lodash';
-import { DailychartProtocol } from './protocols';
+import { DailychartProtocol } from '../protocols';
 
 interface Props {
   selectedDate: string;
