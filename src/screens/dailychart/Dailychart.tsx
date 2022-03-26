@@ -120,9 +120,9 @@ const DailyChart = () => {
             </Pressable>
           )}
           <Text style={styles.headerText}>일일 주차 예약 목록</Text>
-          <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
+          {/* <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
             <Text>test</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
 
         {_.isEmpty(reservationList) ? (
