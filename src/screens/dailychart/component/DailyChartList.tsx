@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList, ScrollView, Alert } from 'react-native';
 import _ from 'lodash';
-import { DailychartProtocol } from './protocols';
+import { DailychartProtocol } from '../protocols';
 
 interface Props {
   selectedDate: string;
@@ -33,9 +33,11 @@ export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onC
             <Text>저장 하기</Text>
           </Pressable>
           <View style={styles.space} />
-          <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic}>
+
+          <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic} disabled>
             <Text style={styles.sendPicButtonText}>사진 전송</Text>
           </Pressable>
+
           <View style={styles.space} />
         </View>
         <View style={{ height: 10 }} />
@@ -76,6 +78,7 @@ const styles = StyleSheet.create({
   },
   sendPicButton: {
     backgroundColor: 'tomato',
+    opacity: 0,
   },
   sendPicButtonText: {
     fontWeight: '500',

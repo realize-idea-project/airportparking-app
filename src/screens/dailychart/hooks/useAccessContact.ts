@@ -3,7 +3,7 @@ import Contacts from 'react-native-contacts';
 import { Permission, PERMISSIONS } from 'react-native-permissions';
 import _ from 'lodash';
 
-import { DailychartProtocol } from './protocols';
+import { DailychartProtocol } from '../protocols';
 
 interface GeneratedContact {
   givenName: string;

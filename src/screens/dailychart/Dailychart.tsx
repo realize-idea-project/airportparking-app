@@ -15,14 +15,9 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
-import { DatePicker } from './DatePicker';
-import { DailyChartList } from './DailyChartList';
-import { usePermission } from './usePermission';
-import { useAcessContact } from './useAccessContacts';
-import { useSMS } from './useSMS';
 
-import { Modal } from '../../components/Modals/Modal';
-import { ServiceInModalContents } from './ServiceInModalContents';
+import { DatePicker, DailyChartList } from './component';
+import { usePermission, useAcessContact, useSMS } from './hooks';
 
 const screenHeight = Dimensions.get('window').height;
 const SERVICE_IN = '입고';
@@ -110,7 +105,6 @@ const DailyChart = () => {
   const sendSmsWithPic = async () => {
     const photo = await launchCamera({
       mediaType: 'photo',
-      // saveToPhotos: true,
     });
     console.log(photo, 'photo');
     openSmsAppWithPic(['1'], photo, hideLoading);
@@ -126,9 +120,9 @@ const DailyChart = () => {
             </Pressable>
           )}
           <Text style={styles.headerText}>일일 주차 예약 목록</Text>
-          <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
+          {/* <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
             <Text>test</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
 
         {_.isEmpty(reservationList) ? (
@@ -149,7 +143,6 @@ const DailyChart = () => {
             <ActivityIndicator size="large" style={styles.indicator} />
           </View>
         )}
-        {/* <Modal contents={() => <ServiceInModalContents />} /> */}
       </View>
     </SafeAreaView>
   );
