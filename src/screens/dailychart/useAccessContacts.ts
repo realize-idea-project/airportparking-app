@@ -1,5 +1,8 @@
-import React from 'react';
-import Contacts, { Contact } from 'react-native-contacts';
+import { Platform } from 'react-native';
+import Contacts from 'react-native-contacts';
+import { Permission, PERMISSIONS } from 'react-native-permissions';
+import _ from 'lodash';
+
 import { DailychartProtocol } from './protocols';
 
 interface GeneratedContact {
@@ -13,6 +16,11 @@ interface PhoneNumber {
 }
 
 export const useAcessContact = () => {
+  const permissionsForContact: Permission[] =
+    Platform.OS === 'ios'
+      ? [PERMISSIONS.IOS.CONTACTS]
+      : [PERMISSIONS.ANDROID.READ_CONTACTS, PERMISSIONS.ANDROID.WRITE_CONTACTS];
+
   const getAllContacts = async () => {
     const allContacts = await Contacts.getAll();
     return allContacts;
@@ -78,6 +86,7 @@ export const useAcessContact = () => {
     generateContacts,
     saveBulkContact,
     deleteAllContacts,
+    permissionsForContact,
   };
 };
 

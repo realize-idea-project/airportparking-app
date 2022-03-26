@@ -31,7 +31,7 @@ const AppNavigationProvider = () => {
       {screenDefinitions.map(({ id, Stack, routes, screenOptions }) => (
         <Stack.Navigator key={id} screenOptions={screenOptions}>
           {routes.map(({ name, component, options }) => (
-            <Stack.Screen name={name} component={component} options={options} />
+            <Stack.Screen key={name} name={name} component={component} options={options} />
           ))}
         </Stack.Navigator>
       ))}

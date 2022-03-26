@@ -8,34 +8,16 @@ interface Props {
   list: DailychartProtocol[];
   onClickReset: () => void;
   onClickSave: () => void;
-  onClickDelete: () => void;
-  onClickSend: () => void;
+  onClickSendAll: () => void;
+  onClickSendWithPic: () => void;
 }
 
-export const DailyChartList: FC<Props> = ({
-  selectedDate,
-  list,
-  onClickReset,
-  onClickSave,
-  onClickDelete,
-  onClickSend,
-}) => {
+export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onClickSendAll, onClickSendWithPic }) => {
   if (_.isEmpty(list)) {
     Alert.alert('해당 날짜의 리스트가 없습니다.');
     onClickReset();
     return null;
   }
-
-  const handleClickDeleteButton = () => {
-    Alert.alert(`${selectedDate} 예약목록의 전화번호가\n핸드폰에서 지워집니다.`, '계속 진행하시겠습니까?', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'OK', onPress: onClickDelete },
-    ]);
-  };
 
   return (
     <>
@@ -43,7 +25,7 @@ export const DailyChartList: FC<Props> = ({
       <View>
         <View style={styles.buttonContainer}>
           <View style={styles.space} />
-          <Pressable style={styles.button} onPress={onClickSend}>
+          <Pressable style={styles.button} onPress={onClickSendAll}>
             <Text>입고 메세지 보내기</Text>
           </Pressable>
           <View style={styles.space} />
@@ -51,8 +33,8 @@ export const DailyChartList: FC<Props> = ({
             <Text>저장 하기</Text>
           </Pressable>
           <View style={styles.space} />
-          <Pressable style={styles.button} onPress={handleClickDeleteButton}>
-            <Text>전화번호 지우기</Text>
+          <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic}>
+            <Text style={styles.sendPicButtonText}>사진 전송</Text>
           </Pressable>
           <View style={styles.space} />
         </View>
@@ -93,6 +75,13 @@ const styles = StyleSheet.create({
   listContentContainerStyle: {
     flexDirection: 'column',
     paddingBottom: 300,
+  },
+  sendPicButton: {
+    backgroundColor: 'tomato',
+  },
+  sendPicButtonText: {
+    fontWeight: '500',
+    color: 'white',
   },
 });
 
