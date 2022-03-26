@@ -11,24 +11,31 @@ import {
   Pressable,
 } from 'react-native';
 import _ from 'lodash';
-import SendSMS from 'react-native-sms';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
 import { DatePicker } from './DatePicker';
 import { DailyChartList } from './DailyChartList';
-import { useContactPermission } from './useContactPermission';
+import { usePermission } from './usePermission';
 import { useAcessContact } from './useAccessContacts';
+import { useSMS } from './useSMS';
+
+import { Modal } from '../../components/Modals/Modal';
+import { ServiceInModalContents } from './ServiceInModalContents';
 
 const screenHeight = Dimensions.get('window').height;
 const SERVICE_IN = '입고';
 
-const DailyChart = ({ navigation }) => {
+const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const { permissionStatus, requestPermissions } = useContactPermission();
-  const { generateContacts, saveBulkContact, deleteAllContacts } = useAcessContact();
+  const { requestPermissions } = usePermission();
+  const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
+  const { openSmsApp, openSmsAppWithPic } = useSMS();
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -42,12 +49,6 @@ const DailyChart = ({ navigation }) => {
     });
 
     return () => listener.remove();
-  }, [reservationList]);
-
-  useEffect(() => {
-    if (!_.isEmpty(reservationList)) {
-      requestPermissions();
-    }
   }, [reservationList]);
 
   const changeDate = (targetDate: Date) => {
@@ -81,7 +82,9 @@ const DailyChart = ({ navigation }) => {
   };
 
   const saveMobileNumbers = async () => {
-    if (!isLoading && permissionStatus === 'granted') {
+    const isPermissionAccepted = await requestPermissions(permissionsForContact);
+
+    if (!isLoading && isPermissionAccepted) {
       setIsLoading(true);
       const newContactsList = generateContacts(reservationList, selectedDate);
       await saveBulkContact(newContactsList);
@@ -90,19 +93,10 @@ const DailyChart = ({ navigation }) => {
     }
   };
 
-  const deleteMobileNumbers = async () => {
-    if (!isLoading && permissionStatus === 'granted') {
-      setIsLoading(true);
-      await deleteAllContacts(selectedDate);
-      Alert.alert('번호 삭제가 완료되었습니다.');
-      setIsLoading(false);
-    }
-  };
-
   const showLoading = () => setIsLoading(true);
   const hideLoading = () => setIsLoading(false);
 
-  const sendSms = () => {
+  const sendSmsAll = () => {
     showLoading();
     const serviceInUsers = getServiceInUserlist(reservationList);
 
@@ -113,14 +107,28 @@ const DailyChart = ({ navigation }) => {
     }
   };
 
+  const sendSmsWithPic = async () => {
+    const photo = await launchCamera({
+      mediaType: 'photo',
+      // saveToPhotos: true,
+    });
+    console.log(photo, 'photo');
+    openSmsAppWithPic(['1'], photo, hideLoading);
+  };
+
   return (
     <SafeAreaView>
       <View>
         <View style={styles.header}>
-          <Pressable style={styles.goBack} onPress={resetChart}>
-            <Text style={styles.backText}>뒤로 가기</Text>
-          </Pressable>
+          {!_.isEmpty(reservationList) && (
+            <Pressable style={styles.goBack} onPress={resetChart}>
+              <Text style={styles.backText}>뒤로 가기</Text>
+            </Pressable>
+          )}
           <Text style={styles.headerText}>일일 주차 예약 목록</Text>
+          <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
+            <Text>test</Text>
+          </Pressable>
         </View>
         {_.isEmpty(reservationList) ? (
           <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={LoadChart} />
@@ -130,8 +138,8 @@ const DailyChart = ({ navigation }) => {
             list={reservationList}
             onClickReset={resetChart}
             onClickSave={saveMobileNumbers}
-            onClickDelete={deleteMobileNumbers}
-            onClickSend={sendSms}
+            onClickSendAll={sendSmsAll}
+            onClickSendWithPic={sendSmsWithPic}
           />
         )}
 
@@ -140,6 +148,7 @@ const DailyChart = ({ navigation }) => {
             <ActivityIndicator size="large" style={styles.indicator} />
           </View>
         )}
+        {/* <Modal contents={() => <ServiceInModalContents />} /> */}
       </View>
     </SafeAreaView>
   );
@@ -155,23 +164,6 @@ const getServiceInUserlist = (wholeList: DailychartProtocol[]) => {
     .map((user) => user.contactNumber)
     .map((contact) => contact.split('-'))
     .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`));
-};
-
-const openSmsApp = (mobiles: string[], cb: () => void) => {
-  if (_.isEmpty(mobiles)) return;
-
-  SendSMS.send(
-    {
-      body: '김포공항 주차대행 입니다 국내선 출발 2층 1번 게이트로 오세요 도착 10분전에 전화주세요',
-      recipients: mobiles,
-      successTypes: ['sent', 'queued'],
-      allowAndroidSendWithoutReadPermission: true,
-    },
-    (completed, cancelled, error) => {
-      console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
-      cb();
-    },
-  );
 };
 
 const styles = StyleSheet.create({
