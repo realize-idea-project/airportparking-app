@@ -41,14 +41,13 @@ export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onC
         <View style={{ height: 10 }} />
       </View>
 
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView horizontal>
         <FlatList
           data={list}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item, index }) => <DailyChartItem item={item} index={index} />}
           contentContainerStyle={styles.listContentContainerStyle}
           ListHeaderComponent={<DailyChartListHeader total={list.length} />}
-          horizontal
         />
       </ScrollView>
       <View style={{ height: 10 }} />
@@ -73,8 +72,7 @@ const styles = StyleSheet.create({
     width: 10,
   },
   listContentContainerStyle: {
-    flexDirection: 'column',
-    paddingBottom: 300,
+    paddingBottom: 50,
   },
   sendPicButton: {
     backgroundColor: 'tomato',
