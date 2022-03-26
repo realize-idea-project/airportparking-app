@@ -130,7 +130,7 @@ const DailyChart = () => {
             <Text>test</Text>
           </Pressable>
         </View>
-        {/* {_.isEmpty(reservationList) ? (
+        {_.isEmpty(reservationList) ? (
           <DatePicker selectedDate={selectedDate} changeDate={changeDate} onClickLoadButton={LoadChart} />
         ) : (
           <DailyChartList
@@ -141,7 +141,7 @@ const DailyChart = () => {
             onClickSendAll={sendSmsAll}
             onClickSendWithPic={sendSmsWithPic}
           />
-        )} */}
+        )}
 
         {isLoading && (
           <View style={styles.loadingView}>
