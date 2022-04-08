@@ -5782,10 +5782,9 @@ react-native-screens@^3.13.1:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-sms@^1.11.0:
-  version "1.11.0"
-  resolved "https://registry.npmjs.org/react-native-sms/-/react-native-sms-1.11.0.tgz"
-  integrity sha512-G5q61qGknNyftN1cFkXfH46UkQWMf3fy/M1fxK/QJzLDJAgCSeBqge62FgJClw1FqzYGSjZeoZvkgpWGDCd3wQ==
+"react-native-sms@https://github.com/devsince2021/react-native-sms.git":
+  version "1.10.1"
+  resolved "https://github.com/devsince2021/react-native-sms.git#cc0fa137425c1d8508010f4423b5128fcf57d6a4"
 
 react-native@0.67.3:
   version "0.67.3"
