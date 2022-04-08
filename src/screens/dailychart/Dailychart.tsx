@@ -15,12 +15,14 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
+import { alertMessages, globalTextString } from './constants';
 
 import { DatePicker, DailyChartList } from './component';
 import { usePermission, useAcessContact, useSMS } from './hooks';
 
 const screenHeight = Dimensions.get('window').height;
 const SERVICE_IN = '입고';
+const SERVICE_OUT = '출고';
 
 const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
@@ -58,7 +60,7 @@ const DailyChart = () => {
         const list = await loadDailyChartList(date);
 
         if (_.isEmpty(list)) {
-          Alert.alert('해당 날짜에 예약이 없습니다. 날짜를 확인해주세요.');
+          Alert.alert(alertMessages.noReservation);
           setIsLoading(false);
           return;
         }
@@ -83,7 +85,7 @@ const DailyChart = () => {
       setIsLoading(true);
       const newContactsList = generateContacts(reservationList, selectedDate);
       await saveBulkContact(newContactsList);
-      Alert.alert('번호 저장이 완료되었습니다.');
+      Alert.alert(alertMessages.doneSavingMobiles);
       setIsLoading(false);
     }
   };
@@ -91,12 +93,44 @@ const DailyChart = () => {
   const showLoading = () => setIsLoading(true);
   const hideLoading = () => setIsLoading(false);
 
-  const sendSmsAll = () => {
-    showLoading();
-    const serviceInUsers = getServiceInUserlist(reservationList);
+  const handlerClickSendSmsToServiceInUser = () => {
+    Alert.alert(alertMessages.sendServiceInMessageTitle, alertMessages.sendServiceInMessage, [
+      {
+        text: globalTextString.cancel,
+        onPress: () => null,
+        style: 'cancel',
+      },
+      { text: globalTextString.send, onPress: sendSmsToServiceInUser },
+    ]);
+  };
 
+  const sendSmsToServiceInUser = () => {
+    showLoading();
+    const serviceInUsers = getUserListByServiceType(reservationList, SERVICE_IN);
     try {
       openSmsApp(serviceInUsers, hideLoading);
+    } catch (e) {
+      hideLoading();
+    }
+  };
+
+  const handlerClickSendSmsToServiceOutUser = () => {
+    Alert.alert(alertMessages.sendServiceOutMessageTitle, alertMessages.sendServiceOutMessage, [
+      {
+        text: globalTextString.cancel,
+        onPress: () => null,
+        style: 'cancel',
+      },
+      { text: globalTextString.send, onPress: sendSmsToServiceOutUser },
+    ]);
+  };
+
+  const sendSmsToServiceOutUser = () => {
+    showLoading();
+    const serviceOutUsers = getUserListByServiceType(reservationList, SERVICE_OUT);
+
+    try {
+      openSmsApp(serviceOutUsers, hideLoading);
     } catch (e) {
       hideLoading();
     }
@@ -133,7 +167,8 @@ const DailyChart = () => {
             list={reservationList}
             onClickReset={resetChart}
             onClickSave={saveMobileNumbers}
-            onClickSendAll={sendSmsAll}
+            onClickSendServiceInMessage={handlerClickSendSmsToServiceInUser}
+            onClickSendServiceOutMessage={handlerClickSendSmsToServiceOutUser}
             onClickSendWithPic={sendSmsWithPic}
           />
         )}
@@ -152,9 +187,9 @@ const formatDate = (date: Date) => {
   return date.toISOString().slice(0, 10);
 };
 
-const getServiceInUserlist = (wholeList: DailychartProtocol[]) => {
+const getUserListByServiceType = (wholeList: DailychartProtocol[], serviceType: '출고' | '입고') => {
   return wholeList
-    .filter((user) => user.serviceType === SERVICE_IN)
+    .filter((user) => user.serviceType === serviceType)
     .map((user) => user.contactNumber)
     .map((contact) => contact.split('-'))
     .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`));

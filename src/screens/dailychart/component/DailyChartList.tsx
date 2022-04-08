@@ -8,11 +8,19 @@ interface Props {
   list: DailychartProtocol[];
   onClickReset: () => void;
   onClickSave: () => void;
-  onClickSendAll: () => void;
+  onClickSendServiceInMessage: () => void;
+  onClickSendServiceOutMessage: () => void;
   onClickSendWithPic: () => void;
 }
 
-export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onClickSendAll, onClickSendWithPic }) => {
+export const DailyChartList: FC<Props> = ({
+  list,
+  onClickReset,
+  onClickSave,
+  onClickSendServiceInMessage,
+  onClickSendServiceOutMessage,
+  onClickSendWithPic,
+}) => {
   if (_.isEmpty(list)) {
     Alert.alert('해당 날짜의 리스트가 없습니다.');
     onClickReset();
@@ -25,7 +33,7 @@ export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onC
       <View>
         <View style={styles.buttonContainer}>
           <View style={styles.space} />
-          <Pressable style={styles.button} onPress={onClickSendAll}>
+          <Pressable style={styles.button} onPress={onClickSendServiceInMessage}>
             <Text>입고 메세지 보내기</Text>
           </Pressable>
           <View style={styles.space} />
@@ -33,10 +41,14 @@ export const DailyChartList: FC<Props> = ({ list, onClickReset, onClickSave, onC
             <Text>저장 하기</Text>
           </Pressable>
           <View style={styles.space} />
-
-          <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic} disabled>
-            <Text style={styles.sendPicButtonText}>사진 전송</Text>
+          <Pressable style={styles.button} onPress={onClickSendServiceOutMessage}>
+            <Text>출고 메세지 보내기</Text>
           </Pressable>
+          <View style={styles.space} />
+
+          {/* <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic} disabled>
+            <Text style={styles.sendPicButtonText}>사진 전송</Text>
+          </Pressable> */}
 
           <View style={styles.space} />
         </View>
