@@ -41,7 +41,7 @@ export const DailyChartList: FC<Props> = ({
             <Text>저장 하기</Text>
           </Pressable>
           <View style={styles.space} />
-          <Pressable style={styles.button} onPress={onClickSendServiceOutMessage}>
+          <Pressable style={[styles.button, styles.sendToServiceOut]} onPress={onClickSendServiceOutMessage}>
             <Text>출고 메세지 보내기</Text>
           </Pressable>
           <View style={styles.space} />
@@ -95,6 +95,9 @@ const styles = StyleSheet.create({
   sendPicButtonText: {
     fontWeight: '500',
     color: 'white',
+  },
+  sendToServiceOut: {
+    backgroundColor: 'yellowgreen',
   },
 });
 
