@@ -7,7 +7,16 @@ export const alertMessages = {
   sendServiceOutMessage: '출고 손님에게 문자를 보내시겠습니까?',
 };
 
+export const SmsMessage = {
+  serviceIn: '김포공항 주차대행 입니다 국내선 출발 2층 1번 게이트로 오세요 도착 10분전에 전화주세요',
+  serviceOut: '김포공항 주차대행 입니다',
+};
+
 export const globalTextString = {
   cancel: '취소',
   send: '보내기',
 };
+
+export const SERVICE_IN = '입고';
+
+export const SERVICE_OUT = '출고';

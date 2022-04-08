@@ -1,16 +1,17 @@
 import _ from 'lodash';
 import SendSMS from 'react-native-sms';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
-
-const ServiceInAllMessage = '김포공항 주차대행 입니다 국내선 출발 2층 1번 게이트로 오세요 도착 10분전에 전화주세요';
+import { SERVICE_IN, SmsMessage } from '../constants';
 
 export const useSMS = () => {
-  const openSmsApp = (mobiles: string[], cb?: () => void) => {
+  const openSmsApp = (type: string, mobiles: string[], cb?: () => void) => {
     if (_.isEmpty(mobiles)) return;
+
+    const message = type === SERVICE_IN ? SmsMessage.serviceIn : SmsMessage.serviceOut;
 
     SendSMS.send(
       {
-        body: ServiceInAllMessage,
+        body: message,
         recipients: mobiles,
         successTypes: ['sent', 'queued'],
         allowAndroidSendWithoutReadPermission: true,

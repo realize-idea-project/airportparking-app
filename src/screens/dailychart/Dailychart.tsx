@@ -15,14 +15,12 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
-import { alertMessages, globalTextString } from './constants';
+import { alertMessages, globalTextString, SERVICE_IN, SERVICE_OUT } from './constants';
 
 import { DatePicker, DailyChartList } from './component';
 import { usePermission, useAcessContact, useSMS } from './hooks';
 
 const screenHeight = Dimensions.get('window').height;
-const SERVICE_IN = '입고';
-const SERVICE_OUT = '출고';
 
 const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
@@ -108,7 +106,7 @@ const DailyChart = () => {
     showLoading();
     const serviceInUsers = getUserListByServiceType(reservationList, SERVICE_IN);
     try {
-      openSmsApp(serviceInUsers, hideLoading);
+      openSmsApp(SERVICE_IN, serviceInUsers, hideLoading);
     } catch (e) {
       hideLoading();
     }
@@ -130,7 +128,7 @@ const DailyChart = () => {
     const serviceOutUsers = getUserListByServiceType(reservationList, SERVICE_OUT);
 
     try {
-      openSmsApp(serviceOutUsers, hideLoading);
+      openSmsApp(SERVICE_OUT, serviceOutUsers, hideLoading);
     } catch (e) {
       hideLoading();
     }
@@ -187,7 +185,7 @@ const formatDate = (date: Date) => {
   return date.toISOString().slice(0, 10);
 };
 
-const getUserListByServiceType = (wholeList: DailychartProtocol[], serviceType: '출고' | '입고') => {
+const getUserListByServiceType = (wholeList: DailychartProtocol[], serviceType: string) => {
   return wholeList
     .filter((user) => user.serviceType === serviceType)
     .map((user) => user.contactNumber)
