@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { FC, useState, useRef } from 'react';
-import { StyleSheet, Text, View, Alert, Pressable, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Alert, Pressable, TextInput, Platform } from 'react-native';
 
 interface Props {
   onClickFindButton: (plateNumber: string) => Promise<void>;
@@ -8,6 +8,8 @@ interface Props {
 }
 
 const MAX_LENGTH = 4;
+
+const isAndroid = Platform.OS === 'android';
 
 export const UserSearchModalContents: FC<Props> = ({ onClickFindButton, onClickClose }) => {
   const [plateNumber, setPlateNumber] = useState<string>('');
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
   containerPosition: {
     position: 'absolute',
     top: '28%',
-    left: '8%',
+    left: isAndroid ? '8%' : '3.5%',
     zIndex: 3,
   },
   containerShape: {
@@ -90,6 +92,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingLeft: 10,
     fontSize: 20,
+    padding: isAndroid ? 10 : 10,
   },
   buttonContainer: {
     alignItems: 'center',

@@ -38,5 +38,26 @@ export const useSMS = () => {
     return res;
   };
 
-  return { openSmsApp, openSmsAppWithPic };
+  const testForIos = async (image: any, message: string, mobile: any) => {
+    const attachment = {
+      url: image.assets?.[0].uri,
+      iosType: image.assets?.[0].type,
+      iosFilename: image.assets?.[0].fileName,
+    };
+
+    SendSMS.send(
+      {
+        body: message,
+        recipients: [mobile],
+        successTypes: ['sent', 'queued'],
+        allowAndroidSendWithoutReadPermission: true,
+        attachment: attachment,
+      },
+      (completed, cancelled, error) => {
+        console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+      },
+    );
+  };
+
+  return { openSmsApp, openSmsAppWithPic, testForIos };
 };
