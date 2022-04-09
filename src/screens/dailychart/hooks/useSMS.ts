@@ -1,5 +1,8 @@
 import _ from 'lodash';
 import SendSMS from 'react-native-sms';
+
+import Share from 'react-native-share';
+
 import { SERVICE_IN, SmsMessage } from '../constants';
 
 export const useSMS = () => {
@@ -22,29 +25,17 @@ export const useSMS = () => {
     );
   };
 
-  const openSmsAppWithPic = (mobiles: string[], imageMeta: any, cb?: () => void) => {
-    if (_.isEmpty(mobiles) || _.isEmpty(imageMeta)) return;
+  const openSmsAppWithPic = async (mobile: string, message: string, imageInBase64: string) => {
+    if (_.isEmpty(mobile) || _.isEmpty(imageInBase64)) return;
 
-    const attachment = {
-      url: imageMeta.uri,
-      androidType: imageMeta.type,
-      // iosType: 'public.jpeg',
-      // iosFilename: 'Image.jpeg',
-    };
+    const res = await Share.shareSingle({
+      message,
+      url: `data:image/jpg;base64,${imageInBase64}`,
+      recipient: mobile,
+      social: Share.Social.SMS,
+    });
 
-    SendSMS.send(
-      {
-        body: 'The default body of the SMS!',
-        recipients: ['01097192118'],
-        successTypes: ['sent', 'queued'],
-        allowAndroidSendWithoutReadPermission: true,
-        attachment: attachment,
-      },
-      (completed, cancelled, error) => {
-        console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
-        cb && cb();
-      },
-    );
+    return res;
   };
 
   return { openSmsApp, openSmsAppWithPic };

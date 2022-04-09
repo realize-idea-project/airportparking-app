@@ -11,11 +11,7 @@ import {
   Pressable,
 } from 'react-native';
 import _ from 'lodash';
-import { launchCamera, launchImageLibrary, ImagePickerResponse } from 'react-native-image-picker';
-
-import Share from 'react-native-share';
-import { options } from './dummy';
-
+import { launchCamera } from 'react-native-image-picker';
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
 import { alertMessages, globalTextString, SERVICE_IN, SERVICE_OUT } from './constants';
@@ -138,28 +134,13 @@ const DailyChart = () => {
   };
 
   const sendSmsWithPic = async () => {
-    const photo = await launchCamera({
-      mediaType: 'photo',
-      quality: 0.5,
-      includeBase64: true,
-    });
+    const { mobile, plateNumber } = getUserByPlateNumber(reservationList, '3188');
+    const message = `안녕하세요 김포공항 주차대행입니다.\n고객님의 ${plateNumber} 차량 안전하게 주차하였습니다.\n김포공항에 돌아와서 연락 부탁드리겠습니다.\n즐거운 여행되세요 :)`;
+    const photoInBase64 = await getPhotoWithBase64();
 
-    const base64 = photo.assets?.[0].base64;
-
-    Share.open({
-      title: 'Sharing image file from awesome share app',
-      message: 'Please take a look at this image',
-      url: `data:image/jpg;base64,${base64}`,
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        err && console.log(err);
-      });
-
-    // const meta = generateImageMeta(photo);
-    // openSmsAppWithPic(['01097192118'], meta, hideLoading);
+    if (photoInBase64) {
+      await openSmsAppWithPic(mobile, message, photoInBase64);
+    }
   };
 
   return (
@@ -201,15 +182,6 @@ const DailyChart = () => {
   );
 };
 
-const generateImageMeta = (image: ImagePickerResponse) => {
-  if (_.isEmpty(image) || _.isEmpty(image.assets)) return;
-
-  return {
-    uri: image.assets?.[0].uri,
-    type: image.assets?.[0].type,
-  };
-};
-
 const formatDate = (date: Date) => {
   return date.toISOString().slice(0, 10);
 };
@@ -220,6 +192,29 @@ const getUserListByServiceType = (wholeList: DailychartProtocol[], serviceType: 
     .map((user) => user.contactNumber)
     .map((contact) => contact.split('-'))
     .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`));
+};
+
+const getUserByPlateNumber = (wholeList: DailychartProtocol[], plateNumberHint: string) => {
+  const targetUser = wholeList.filter((user) => _.includes(user.plateNumber, plateNumberHint));
+
+  const mobile = targetUser
+    .map((user) => user.contactNumber)
+    .map((contact) => contact.split('-'))
+    .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`))?.[0];
+
+  const { plateNumber } = targetUser?.[0];
+
+  return { mobile, plateNumber };
+};
+
+const getPhotoWithBase64 = async () => {
+  const photo = await launchCamera({
+    mediaType: 'photo',
+    quality: 0.5,
+    includeBase64: true,
+  });
+
+  return photo.assets?.[0].base64;
 };
 
 const styles = StyleSheet.create({
@@ -256,26 +251,3 @@ const styles = StyleSheet.create({
 });
 
 export default DailyChart;
-
-// const sendSmsWithPic = async () => {
-//   Share.shareSingle({
-//     title: 'Share via',
-//     message: 'some message',
-//     url: 'some share url',
-//     recipient: '01097192118',
-//     social: Share.Social.SMS,
-//   })
-//     .then((res) => {
-//       console.log(res);
-//     })
-//     .catch((err) => {
-//       err && console.log(err);
-//     });
-
-//   // const photo = await launchCamera({
-//   //   mediaType: 'photo',
-//   // });
-//   // const meta = generateImageMeta(photo);
-
-//   // openSmsAppWithPic(['01097192118'], meta, hideLoading);
-// };
