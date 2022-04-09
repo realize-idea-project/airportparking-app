@@ -13,7 +13,9 @@ import java.util.List;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 
-public class MainApplication extends Application implements ReactApplication {
+import cl.json.ShareApplication;
+
+public class MainApplication extends Application implements ShareApplication, ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -49,6 +51,11 @@ public class MainApplication extends Application implements ReactApplication {
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
+
+  @Override
+    public String getFileProviderAuthority() {
+          return BuildConfig.APPLICATION_ID + ".provider";
+    }
 
   /**
    * Loads Flipper in React Native templates. Call this in the onCreate method with something like

@@ -27,6 +27,7 @@
     "react-native-permissions": "^3.3.0",
     "react-native-safe-area-context": "^4.2.1",
     "react-native-screens": "^3.13.1",
+    "react-native-share": "^7.3.7",
     "react-native-sms": "^1.11.0"
   },
   "devDependencies": {

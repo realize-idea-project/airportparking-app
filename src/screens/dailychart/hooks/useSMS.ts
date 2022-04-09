@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import SendSMS from 'react-native-sms';
-import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
+
+import Share from 'react-native-share';
+
 import { SERVICE_IN, SmsMessage } from '../constants';
 
 export const useSMS = () => {
@@ -23,32 +25,17 @@ export const useSMS = () => {
     );
   };
 
-  const openSmsAppWithPic = (mobiles: string[], image: any, cb?: () => void) => {
-    if (_.isEmpty(mobiles) || _.isEmpty(image)) return;
+  const openSmsAppWithPic = async (mobile: string, message: string, imageInBase64: string) => {
+    if (_.isEmpty(mobile) || _.isEmpty(imageInBase64)) return;
 
-    const metadata = resolveAssetSource(image.assets[0]);
-    console.log(metadata);
+    const res = await Share.shareSingle({
+      message,
+      url: `data:image/jpg;base64,${imageInBase64}`,
+      recipient: mobile,
+      social: Share.Social.SMS,
+    });
 
-    const attachment = {
-      url: metadata.uri,
-      // iosType: 'public.jpeg',
-      // iosFilename: 'Image.jpeg',
-      androidType: image.assets[0].type,
-    };
-
-    SendSMS.send(
-      {
-        body: 'The default body of the SMS!',
-        recipients: ['01097192118'],
-        successTypes: ['sent', 'queued'],
-        allowAndroidSendWithoutReadPermission: true,
-        attachment: attachment,
-      },
-      (completed, cancelled, error) => {
-        console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
-        cb && cb();
-      },
-    );
+    return res;
   };
 
   return { openSmsApp, openSmsAppWithPic };
