@@ -46,7 +46,7 @@ export const DailyChartList: FC<Props> = ({
           </Pressable>
           <View style={styles.space} />
         </View>
-        <View style={{ height: 10 }} />
+        <View style={{ height: 15 }} />
       </View>
       <View>
         <View style={styles.buttonContainer}>
@@ -56,7 +56,7 @@ export const DailyChartList: FC<Props> = ({
 
           <View style={styles.space} />
         </View>
-        <View style={{ height: 10 }} />
+        <View style={{ height: 15 }} />
       </View>
 
       <ScrollView horizontal>
@@ -80,11 +80,12 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    height: 40,
+    // height: 40,
     backgroundColor: '#dddddd',
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 15,
   },
   space: {
     width: 10,
