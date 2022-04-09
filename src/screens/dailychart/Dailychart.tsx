@@ -13,6 +13,9 @@ import {
 import _ from 'lodash';
 import { launchCamera, launchImageLibrary, ImagePickerResponse } from 'react-native-image-picker';
 
+import Share from 'react-native-share';
+import { options } from './dummy';
+
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
 import { alertMessages, globalTextString, SERVICE_IN, SERVICE_OUT } from './constants';
@@ -137,10 +140,26 @@ const DailyChart = () => {
   const sendSmsWithPic = async () => {
     const photo = await launchCamera({
       mediaType: 'photo',
+      quality: 0.5,
+      includeBase64: true,
     });
-    const meta = generateImageMeta(photo);
 
-    openSmsAppWithPic(['01097192118'], meta, hideLoading);
+    const base64 = photo.assets?.[0].base64;
+
+    Share.open({
+      title: 'Sharing image file from awesome share app',
+      message: 'Please take a look at this image',
+      url: `data:image/jpg;base64,${base64}`,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        err && console.log(err);
+      });
+
+    // const meta = generateImageMeta(photo);
+    // openSmsAppWithPic(['01097192118'], meta, hideLoading);
   };
 
   return (
@@ -237,3 +256,26 @@ const styles = StyleSheet.create({
 });
 
 export default DailyChart;
+
+// const sendSmsWithPic = async () => {
+//   Share.shareSingle({
+//     title: 'Share via',
+//     message: 'some message',
+//     url: 'some share url',
+//     recipient: '01097192118',
+//     social: Share.Social.SMS,
+//   })
+//     .then((res) => {
+//       console.log(res);
+//     })
+//     .catch((err) => {
+//       err && console.log(err);
+//     });
+
+//   // const photo = await launchCamera({
+//   //   mediaType: 'photo',
+//   // });
+//   // const meta = generateImageMeta(photo);
+
+//   // openSmsAppWithPic(['01097192118'], meta, hideLoading);
+// };
