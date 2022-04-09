@@ -3,15 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { navigationDefinitions } from './routes';
-import _ from 'lodash';
 
-const INITIAL_ROUTE = 'DailyChart';
+import _ from 'lodash';
 
 const AppNavigation = {
   Stack: createNativeStackNavigator(),
   navigatorOptions: {
     screenOptions: { headerShown: false },
-    initialRouteName: INITIAL_ROUTE,
   },
   routes: _.flatMap(navigationDefinitions, ({ routes }) => routes),
 };
