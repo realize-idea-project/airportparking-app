@@ -45,10 +45,14 @@ export const DailyChartList: FC<Props> = ({
             <Text>출고 메세지 보내기</Text>
           </Pressable>
           <View style={styles.space} />
-
-          {/* <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic} disabled>
+        </View>
+        <View style={{ height: 10 }} />
+      </View>
+      <View>
+        <View style={styles.buttonContainer}>
+          <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic}>
             <Text style={styles.sendPicButtonText}>사진 전송</Text>
-          </Pressable> */}
+          </Pressable>
 
           <View style={styles.space} />
         </View>
@@ -90,7 +94,6 @@ const styles = StyleSheet.create({
   },
   sendPicButton: {
     backgroundColor: 'tomato',
-    opacity: 0,
   },
   sendPicButtonText: {
     fontWeight: '500',

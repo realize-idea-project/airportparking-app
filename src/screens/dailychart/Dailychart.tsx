@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import { launchCamera } from 'react-native-image-picker';
+
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
 import { alertMessages, globalTextString, SERVICE_IN, SERVICE_OUT } from './constants';
-
-import { DatePicker, DailyChartList } from './component';
+import { Modal } from '../../components/Modals/Modal';
+import { DatePicker, DailyChartList, UserSearchModalContents } from './component';
 import { usePermission, useAcessContact, useSMS } from './hooks';
 
 const screenHeight = Dimensions.get('window').height;
@@ -24,8 +25,10 @@ const screenHeight = Dimensions.get('window').height;
 const DailyChart = () => {
   const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [imageBase64, setImageBase64] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const showModalRef = useRef(false);
 
   const { requestPermissions } = usePermission();
   const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
@@ -33,13 +36,15 @@ const DailyChart = () => {
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (_.isEmpty(reservationList)) {
-        return false;
-      } else {
+      if (showModalRef.current) {
+        closeInputPlateNumberModal();
+        return true;
+      } else if (!_.isEmpty(reservationList)) {
         setReservationList([]);
         setSelectedDate(formatDate(new Date()));
         return true;
       }
+      return false;
     });
 
     return () => listener.remove();
@@ -133,14 +138,39 @@ const DailyChart = () => {
     }
   };
 
-  const sendSmsWithPic = async () => {
-    const { mobile, plateNumber } = getUserByPlateNumber(reservationList, '3188');
-    const message = `안녕하세요 김포공항 주차대행입니다.\n고객님의 ${plateNumber} 차량 안전하게 주차하였습니다.\n김포공항에 돌아와서 연락 부탁드리겠습니다.\n즐거운 여행되세요 :)`;
-    const photoInBase64 = await getPhotoWithBase64();
+  const sendSmsWithPhoto = async (plateHint: string) => {
+    try {
+      const userInfo = getUserByPlateNumber(reservationList, plateHint);
+      const message = `안녕하세요 김포공항 주차대행입니다.\n고객님의 ${userInfo?.plateNumber} 차량 안전하게 주차하였습니다.\n김포공항에 돌아와서 연락 부탁드리겠습니다.\n즐거운 여행되세요 :)`;
 
-    if (photoInBase64) {
-      await openSmsAppWithPic(mobile, message, photoInBase64);
+      if (!_.isNil(imageBase64) && !_.isNil(userInfo)) {
+        await openSmsAppWithPic(userInfo.mobile, message, imageBase64);
+        closeInputPlateNumberModal();
+      }
+    } catch (e) {
+      closeInputPlateNumberModal();
+      console.error(e);
     }
+  };
+
+  const handleClickSmsWithPhotoButton = async () => {
+    const photoInBase64 = await getPhotoWithBase64();
+    setImageBase64(photoInBase64);
+
+    if (!_.isNil(photoInBase64)) {
+      openInputPlateNumberModal();
+    } else {
+      Alert.alert('사진 촬영이 실패하였습니다.');
+    }
+  };
+
+  const openInputPlateNumberModal = () => {
+    setShowModal(true);
+    showModalRef.current = true;
+  };
+  const closeInputPlateNumberModal = () => {
+    setShowModal(false);
+    showModalRef.current = false;
   };
 
   return (
@@ -153,7 +183,7 @@ const DailyChart = () => {
             </Pressable>
           )}
           <Text style={styles.headerText}>일일 주차 예약 목록</Text>
-          <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
+          <Pressable onPress={openInputPlateNumberModal} style={{ height: 30 }}>
             <Text>test</Text>
           </Pressable>
         </View>
@@ -168,7 +198,7 @@ const DailyChart = () => {
             onClickSave={saveMobileNumbers}
             onClickSendServiceInMessage={handlerClickSendSmsToServiceInUser}
             onClickSendServiceOutMessage={handlerClickSendSmsToServiceOutUser}
-            onClickSendWithPic={sendSmsWithPic}
+            onClickSendWithPic={handleClickSmsWithPhotoButton}
           />
         )}
 
@@ -176,6 +206,13 @@ const DailyChart = () => {
           <View style={styles.loadingView}>
             <ActivityIndicator size="large" style={styles.indicator} />
           </View>
+        )}
+        {showModal && (
+          <Modal
+            contents={() => (
+              <UserSearchModalContents onClickFindButton={sendSmsWithPhoto} onClickClose={closeInputPlateNumberModal} />
+            )}
+          />
         )}
       </View>
     </SafeAreaView>
@@ -197,14 +234,20 @@ const getUserListByServiceType = (wholeList: DailychartProtocol[], serviceType: 
 const getUserByPlateNumber = (wholeList: DailychartProtocol[], plateNumberHint: string) => {
   const targetUser = wholeList.filter((user) => _.includes(user.plateNumber, plateNumberHint));
 
+  if (_.isEmpty(targetUser)) {
+    Alert.alert('해당 번호의 차량이 없습니다. 번호를 다시 한번 확인해주세요.');
+    return;
+  }
+
   const mobile = targetUser
     .map((user) => user.contactNumber)
     .map((contact) => contact.split('-'))
     .map((contact) => contact.reduce((acc, cur) => `${acc}${cur}`))?.[0];
 
-  const { plateNumber } = targetUser?.[0];
-
-  return { mobile, plateNumber };
+  return {
+    mobile,
+    plateNumber: targetUser?.[0]?.plateNumber,
+  };
 };
 
 const getPhotoWithBase64 = async () => {
