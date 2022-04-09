@@ -32,7 +32,7 @@ const DailyChart = () => {
 
   const { requestPermissions } = usePermission();
   const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
-  const { openSmsApp, openSmsAppWithPic } = useSMS();
+  const { openSmsApp, openSmsAppWithPic, testForIos } = useSMS();
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -138,6 +138,18 @@ const DailyChart = () => {
     }
   };
 
+  const sendSmsWithPhotoIos = async (plateNumber: string) => {
+    const userInfo = getUserByPlateNumber(reservationList, plateNumber);
+    const message = `안녕하세요 김포공항 주차대행입니다.\n고객님의 ${userInfo?.plateNumber} 차량 안전하게 주차하였습니다.\n김포공항에 돌아와서 연락 부탁드리겠습니다.\n즐거운 여행되세요 :)`;
+
+    const photo = await launchCamera({
+      mediaType: 'photo',
+      quality: 0.5,
+    });
+
+    testForIos(photo, message, userInfo?.mobile);
+  };
+
   const sendSmsWithPhoto = async (plateHint: string) => {
     try {
       const userInfo = getUserByPlateNumber(reservationList, plateHint);
@@ -207,7 +219,10 @@ const DailyChart = () => {
         {showModal && (
           <Modal
             contents={() => (
-              <UserSearchModalContents onClickFindButton={sendSmsWithPhoto} onClickClose={closeInputPlateNumberModal} />
+              <UserSearchModalContents
+                onClickFindButton={sendSmsWithPhotoIos}
+                onClickClose={closeInputPlateNumberModal}
+              />
             )}
           />
         )}
