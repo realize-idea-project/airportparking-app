@@ -28,7 +28,6 @@ const DailyChart = () => {
   const [imageBase64, setImageBase64] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const showModalRef = useRef(false);
 
   const { requestPermissions } = usePermission();
   const { generateContacts, saveBulkContact, permissionsForContact } = useAcessContact();
@@ -36,7 +35,7 @@ const DailyChart = () => {
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (showModalRef.current) {
+      if (showModal) {
         closeInputPlateNumberModal();
         return true;
       } else if (!_.isEmpty(reservationList)) {
@@ -48,7 +47,7 @@ const DailyChart = () => {
     });
 
     return () => listener.remove();
-  }, [reservationList]);
+  }, [reservationList, showModal]);
 
   const changeDate = (targetDate: Date) => {
     const formattedDate = formatDate(new Date(targetDate));
@@ -176,14 +175,8 @@ const DailyChart = () => {
     }
   };
 
-  const openInputPlateNumberModal = () => {
-    setShowModal(true);
-    showModalRef.current = true;
-  };
-  const closeInputPlateNumberModal = () => {
-    setShowModal(false);
-    showModalRef.current = false;
-  };
+  const openInputPlateNumberModal = () => setShowModal(true);
+  const closeInputPlateNumberModal = () => setShowModal(false);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
