@@ -5784,7 +5784,7 @@ react-native-screens@^3.13.1:
 
 "react-native-sms@https://github.com/devsince2021/react-native-sms.git":
   version "1.10.1"
-  resolved "https://github.com/devsince2021/react-native-sms.git#cc0fa137425c1d8508010f4423b5128fcf57d6a4"
+  resolved "https://github.com/devsince2021/react-native-sms.git#29e06c28e5c130ee329396af2bac49f6bb6bd014"
 
 react-native@0.67.3:
   version "0.67.3"

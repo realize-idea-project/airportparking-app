@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import SendSMS from 'react-native-sms';
-import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 import { SERVICE_IN, SmsMessage } from '../constants';
 
 export const useSMS = () => {
@@ -23,17 +22,14 @@ export const useSMS = () => {
     );
   };
 
-  const openSmsAppWithPic = (mobiles: string[], image: any, cb?: () => void) => {
-    if (_.isEmpty(mobiles) || _.isEmpty(image)) return;
-
-    const metadata = resolveAssetSource(image.assets[0]);
-    console.log(metadata);
+  const openSmsAppWithPic = (mobiles: string[], imageMeta: any, cb?: () => void) => {
+    if (_.isEmpty(mobiles) || _.isEmpty(imageMeta)) return;
 
     const attachment = {
-      url: metadata.uri,
+      url: imageMeta.uri,
+      androidType: imageMeta.type,
       // iosType: 'public.jpeg',
       // iosFilename: 'Image.jpeg',
-      androidType: image.assets[0].type,
     };
 
     SendSMS.send(

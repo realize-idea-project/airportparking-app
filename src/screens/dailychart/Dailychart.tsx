@@ -11,7 +11,7 @@ import {
   Pressable,
 } from 'react-native';
 import _ from 'lodash';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary, ImagePickerResponse } from 'react-native-image-picker';
 
 import { loadDailyChartList } from '../../apis';
 import { DailychartProtocol } from './protocols';
@@ -138,8 +138,9 @@ const DailyChart = () => {
     const photo = await launchCamera({
       mediaType: 'photo',
     });
-    console.log(photo, 'photo');
-    openSmsAppWithPic(['1'], photo, hideLoading);
+    const meta = generateImageMeta(photo);
+
+    openSmsAppWithPic(['01097192118'], meta, hideLoading);
   };
 
   return (
@@ -152,9 +153,9 @@ const DailyChart = () => {
             </Pressable>
           )}
           <Text style={styles.headerText}>일일 주차 예약 목록</Text>
-          {/* <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
+          <Pressable onPress={sendSmsWithPic} style={{ height: 30 }}>
             <Text>test</Text>
-          </Pressable> */}
+          </Pressable>
         </View>
 
         {_.isEmpty(reservationList) ? (
@@ -179,6 +180,15 @@ const DailyChart = () => {
       </View>
     </SafeAreaView>
   );
+};
+
+const generateImageMeta = (image: ImagePickerResponse) => {
+  if (_.isEmpty(image) || _.isEmpty(image.assets)) return;
+
+  return {
+    uri: image.assets?.[0].uri,
+    type: image.assets?.[0].type,
+  };
 };
 
 const formatDate = (date: Date) => {
