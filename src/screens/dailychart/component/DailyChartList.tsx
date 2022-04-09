@@ -50,7 +50,7 @@ export const DailyChartList: FC<Props> = ({
       </View>
       <View>
         <View style={styles.buttonContainer}>
-          <Pressable style={[styles.button, styles.sendPicButton]} onPress={onClickSendWithPic}>
+          <Pressable style={[styles.button, styles.sendPicButton, { marginLeft: 8 }]} onPress={onClickSendWithPic}>
             <Text style={styles.sendPicButtonText}>사진 전송</Text>
           </Pressable>
 
