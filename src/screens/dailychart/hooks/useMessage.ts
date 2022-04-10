@@ -57,7 +57,6 @@ export const useMessage = () => {
         social: Share.Social.SMS,
       });
 
-      console.log('mms success in android', res);
       return true;
     } catch (e) {
       console.error('send mms in aos is failed', e);
@@ -93,7 +92,7 @@ export const useMessage = () => {
     try {
       const result = isAndroid ? await getPhtoInBase64() : await getPhoto();
       image.current = result;
-      return true;
+      return !_.isEmpty(result);
     } catch (e) {
       return false;
     }
