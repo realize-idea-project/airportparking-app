@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-// import DailyChart from '../screens/DailychartDep/Dailychart';
 import DatePicker from '../screens/DatePicker';
 import DailyChart from '../screens/DailyChart';
+import { Reservation } from '../shared/types/Reservation';
 
 /**
  * DailyChartNavigationProps의 key는
@@ -11,7 +11,19 @@ import DailyChart from '../screens/DailyChart';
 
 type NavigationStackProps = {
   DatePicker: undefined;
-  DailyChart: { selectedDate: string };
+  DailyChart: { reservationList: Reservation[]; selectedDate: string };
+};
+
+const config = {
+  animation: 'spring',
+  config: {
+    stiffness: 1000,
+    damping: 500,
+    mass: 3,
+    overshootClamping: true,
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 0.01,
+  },
 };
 
 const DailyChartNavigationDefinition = {

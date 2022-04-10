@@ -4,9 +4,12 @@ import CalendarPicker, { DateChangedCallback } from 'react-native-calendar-picke
 import _ from 'lodash';
 
 import { CustomNavigationType } from '../../navigations';
-import { DATE_LENGTH_FOR_CHART, formatDate, noticeAlert } from '../../utils';
+import { formatDate, noticeAlert } from '../../utils';
+import { loadDailyChartList } from '../../apis';
 
 import { HeaderWithGoback } from '../../components/Header';
+import { LoadingSpinner } from '../../components/Spinner';
+import { generateReservation } from '../../shared/types/Reservation';
 
 const delay = 1000;
 const KOREAN_MONTH = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
@@ -20,22 +23,33 @@ interface Props {
 
 export const DatePicker: FC<Props> = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [isLoading, setIsLoading] = useState(false);
 
   const changeDate = (targetDate: Date) => {
     const formattedDate = formatDate(new Date(targetDate));
     setSelectedDate(formattedDate);
   };
 
-  const handleClickLoadButton = useCallback(
-    _.throttle(() => {
-      if (!_.isEmpty(selectedDate) && selectedDate.length === DATE_LENGTH_FOR_CHART) {
-        navigation.navigate('DailyChart', { selectedDate });
-      } else {
-        noticeAlert({ message: '날짜가 잘못 선택되었습니다. 날짜를 다시 선택해주세요.' });
-      }
-    }, delay),
-    [selectedDate],
-  );
+  const clickLoadButton = async () => {
+    const reservationList = await loadList(selectedDate);
+
+    if (_.isEmpty(reservationList)) {
+      noticeAlert({ message: '해당 날짜에 목록이 없습니다. 날짜를 다시 확인해주세요.' });
+    } else {
+      navigation.push('DailyChart', { reservationList, selectedDate });
+    }
+  };
+
+  const loadList = async (date: string) => {
+    if (isLoading) return [];
+
+    setIsLoading(true);
+    const list = await loadDailyChartList(date);
+    setIsLoading(false);
+    return list.map(generateReservation);
+  };
+
+  const handleClickLoadButton = useCallback(_.throttle(clickLoadButton, delay), [selectedDate]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -58,6 +72,7 @@ export const DatePicker: FC<Props> = ({ navigation }) => {
       <Pressable style={styles.button} onPress={handleClickLoadButton}>
         <Text style={styles.buttonText}>목록 가져오기</Text>
       </Pressable>
+      {isLoading && <LoadingSpinner />}
     </SafeAreaView>
   );
 };

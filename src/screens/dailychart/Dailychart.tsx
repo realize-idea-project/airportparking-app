@@ -1,68 +1,121 @@
-import React, { FC, useState, useEffect, useRef } from 'react';
-import { BackHandler } from 'react-native';
+import React, { FC, useState, useEffect } from 'react';
+import { SafeAreaView, View, BackHandler } from 'react-native';
 import _ from 'lodash';
 
 import { CustomNavigationType } from '../../navigations';
-import { confirmAlert, DATE_LENGTH_FOR_CHART } from '../../utils';
-import { loadDailyChartList } from '../../apis';
+import { confirmAlert, noticeAlert } from '../../utils';
+import { HeaderWithGoback } from '../../components/Header';
+import { Modal } from '../../components/Modals';
+import { LoadingSpinner } from '../../components/Spinner';
 
-import { DailychartProtocol } from './protocols';
-import { DailyChartScreen } from './DailyChartScreen';
+import { useContact, useMessage, useReservation } from './hooks';
+import { DailyChartList, UserSearchModalContents, ControlButtons } from './component';
 
 interface Props {
   navigation: CustomNavigationType<'DailyChart', 'navigation'>;
   route: CustomNavigationType<'DailyChart', 'route'>;
 }
 
+const SERVICE_IN = true;
+
 export const DailyChart: FC<Props> = ({ navigation, route }) => {
-  const [reservationList, setReservationList] = useState<DailychartProtocol[]>([]);
-  const isLoading = useRef(false);
+  const { sendMMS, sendSmsByServiceType, getMMSPhoto } = useMessage();
+  const { saveContactNumbers } = useContact();
+  const { reservationList, getContactNumberByServiceType, generateContactFormat, getSelectedUserDetail } =
+    useReservation(route.params);
 
-  const { selectedDate } = route.params;
-
-  useEffect(() => {
-    const listener = BackHandler.addEventListener('hardwareBackPress', () => false);
-    return () => listener.remove();
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (validateSelectedDate(selectedDate)) {
-      LoadChart(selectedDate);
-    } else {
-      moveToDatePickerWithAlert('날짜가 잘못 선택되었습니다. 날짜를 다시 선택해주세요.');
-    }
-  }, [selectedDate]);
-
-  const LoadChart = async (date: string) => {
-    try {
-      if (!isLoading.current) {
-        isLoading.current = true;
-        const list = await loadDailyChartList(date);
-
-        if (_.isEmpty(list)) {
-          moveToDatePickerWithAlert('해당 날짜에 예약이 없습니다. 날짜를 확인해주세요.');
-        } else {
-          setReservationList(list);
-          isLoading.current = false;
-        }
+    const listener = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (showModal) {
+        closeInputPlateNumberModal();
+        return true;
       }
-    } catch (e) {
-      moveToDatePickerWithAlert('리스트 로딩 중에 문제가 발생하였습니다. 날짜를 다시 선택해주세요.');
+    });
+    return () => listener.remove();
+  }, [showModal]);
+
+  const sendServiceMessageByType = (isServiceIn: boolean) => async () => {
+    if (!isLoading) {
+      showLoading();
+      const title = isServiceIn ? '<입고>' : '<출고>';
+      const message = isServiceIn ? '입고 손님에게 문자를 보내시겠습니까?' : '출고 손님에게 문자를 보내시겠습니까?';
+      const confirmText = '보내기';
+      const onConfirm = async () => {
+        const contactList = getContactNumberByServiceType(isServiceIn);
+        await sendSmsByServiceType(contactList, isServiceIn, hideLoading);
+      };
+
+      confirmAlert({ title, message, confirmText, onConfirm });
     }
   };
 
-  const moveToDatePickerWithAlert = (message: string) => {
-    confirmAlert({
-      message,
-      onConfirm: () => {
-        navigation.navigate('DatePicker');
-      },
-    });
+  const saveContactOnMobile = async () => {
+    if (isLoading) return;
+
+    showLoading();
+    const contactsList = generateContactFormat();
+    const isSuccess = await saveContactNumbers(contactsList);
+    hideLoading();
+
+    const message = isSuccess ? '번호 저장이 완료되었습니다.' : '번호 저장에 실패하였습니다.';
+    noticeAlert({ message });
   };
 
-  return <DailyChartScreen navigation={navigation} reservationList={reservationList} />;
-};
+  const takeMMSPhoto = async () => {
+    const isSucceess = await getMMSPhoto();
 
-const validateSelectedDate = (selectedDate: string) => {
-  return !_.isEmpty(selectedDate) && selectedDate.length === DATE_LENGTH_FOR_CHART;
+    if (isSucceess) {
+      openInputPlateNumberModal();
+    } else {
+      noticeAlert({ message: '사진 촬영이 실패하였습니다.' });
+    }
+  };
+
+  const sendMMSWithPhoto = async (plateNumber: string) => {
+    const selectedUser = getSelectedUserDetail(plateNumber);
+
+    if (!_.isEmpty(selectedUser) && !_.isNil(selectedUser)) {
+      const message = `안녕하세요 김포공항 주차대행입니다.\n고객님의 ${selectedUser?.plateNumber} 차량 안전하게 주차하였습니다.\n김포공항에 돌아와서 연락 부탁드리겠습니다.\n즐거운 여행되세요 :)`;
+      await sendMMS(selectedUser.contactNumber, message);
+      closeInputPlateNumberModal();
+    } else {
+      noticeAlert({ message: '일치하는 차량번호가 없습니다. 다시 한번 확인해주세요.' });
+      return;
+    }
+  };
+
+  const showLoading = () => setIsLoading(true);
+  const hideLoading = () => setIsLoading(false);
+
+  const openInputPlateNumberModal = () => setShowModal(true);
+  const closeInputPlateNumberModal = () => setShowModal(false);
+
+  const goPreviousScreen = () => navigation.pop();
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <HeaderWithGoback text="일일 주차 예약 목록" onClickLeftComponent={goPreviousScreen} leftComponent />
+      <View style={{ height: 10 }} />
+      <ControlButtons
+        onClickSendServiceInMessage={sendServiceMessageByType(SERVICE_IN)}
+        onClickSaveContact={saveContactOnMobile}
+        onClickSendServiceOutMessage={sendServiceMessageByType(!SERVICE_IN)}
+        onClickSendMMS={takeMMSPhoto}
+      />
+      <View style={{ height: 15 }} />
+      <DailyChartList list={reservationList} />
+
+      {isLoading && <LoadingSpinner />}
+      {showModal && (
+        <Modal
+          contents={() => (
+            <UserSearchModalContents onClickFindButton={sendMMSWithPhoto} onClickClose={closeInputPlateNumberModal} />
+          )}
+        />
+      )}
+    </SafeAreaView>
+  );
 };
