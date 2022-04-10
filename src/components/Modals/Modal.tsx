@@ -1,15 +1,5 @@
 import React, { FC } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Alert,
-  ActivityIndicator,
-  BackHandler,
-  Pressable,
-} from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 
 interface ModalProps {
   contents: any;

@@ -1,6 +1,6 @@
 import React from 'react';
 import Config from 'react-native-config';
-import AppNavigationProvider from './navigations/provider';
+import AppNavigationProvider from './navigations';
 
 const App = () => {
   console.log(Config.ENV);

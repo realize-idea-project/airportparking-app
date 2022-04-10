@@ -1,68 +1,21 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text, View, Pressable, FlatList, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView, Alert } from 'react-native';
 import _ from 'lodash';
-import { DailychartProtocol } from '../protocols';
+import { Reservation } from '../types';
 
 interface Props {
-  selectedDate: string;
-  list: DailychartProtocol[];
-  onClickReset: () => void;
-  onClickSave: () => void;
-  onClickSendServiceInMessage: () => void;
-  onClickSendServiceOutMessage: () => void;
-  onClickSendWithPic: () => void;
+  list: Reservation[];
 }
 
-export const DailyChartList: FC<Props> = ({
-  list,
-  onClickReset,
-  onClickSave,
-  onClickSendServiceInMessage,
-  onClickSendServiceOutMessage,
-  onClickSendWithPic,
-}) => {
-  if (_.isEmpty(list)) {
-    Alert.alert('해당 날짜의 리스트가 없습니다.');
-    onClickReset();
-    return null;
-  }
+export const DailyChartList: FC<Props> = ({ list }) => {
+  if (_.isEmpty(list)) return null;
 
   return (
     <>
-      <View style={{ height: 10 }} />
-      <View>
-        <View style={styles.buttonContainer}>
-          <View style={styles.space} />
-          <Pressable style={styles.button} onPress={onClickSendServiceInMessage}>
-            <Text>입고 메세지 보내기</Text>
-          </Pressable>
-          <View style={styles.space} />
-          <Pressable style={styles.button} onPress={onClickSave}>
-            <Text>저장 하기</Text>
-          </Pressable>
-          <View style={styles.space} />
-          <Pressable style={[styles.button, styles.sendToServiceOut]} onPress={onClickSendServiceOutMessage}>
-            <Text>출고 메세지 보내기</Text>
-          </Pressable>
-          <View style={styles.space} />
-        </View>
-        <View style={{ height: 15 }} />
-      </View>
-      <View>
-        <View style={styles.buttonContainer}>
-          <Pressable style={[styles.button, styles.sendPicButton, { marginLeft: 8 }]} onPress={onClickSendWithPic}>
-            <Text style={styles.sendPicButtonText}>사진 전송</Text>
-          </Pressable>
-
-          <View style={styles.space} />
-        </View>
-        <View style={{ height: 15 }} />
-      </View>
-
       <ScrollView horizontal>
         <FlatList
           data={list}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.rowCount.toString()}
           renderItem={({ item, index }) => <DailyChartItem item={item} index={index} />}
           contentContainerStyle={styles.listContentContainerStyle}
           ListHeaderComponent={<DailyChartListHeader total={list.length} />}
@@ -74,34 +27,8 @@ export const DailyChartList: FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-  button: {
-    flex: 1,
-    // height: 40,
-    backgroundColor: '#dddddd',
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 15,
-  },
-  space: {
-    width: 10,
-  },
   listContentContainerStyle: {
     paddingBottom: 50,
-  },
-  sendPicButton: {
-    backgroundColor: 'tomato',
-  },
-  sendPicButtonText: {
-    fontWeight: '500',
-    color: 'white',
-  },
-  sendToServiceOut: {
-    backgroundColor: 'yellowgreen',
   },
 });
 
@@ -126,7 +53,7 @@ const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
 };
 
 interface DailyChartItemProps {
-  item: DailychartProtocol;
+  item: Reservation;
   index: number;
 }
 const EXTERNAL_CHANNEL = '티몬';
