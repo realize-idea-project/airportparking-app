@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import DatePicker from '../screens/DatePicker';
-import DailyChart from '../screens/TEMP';
+import DailyChart from '../screens/DailyChart';
 import { Reservation } from '../shared/types/Reservation';
 
 /**
