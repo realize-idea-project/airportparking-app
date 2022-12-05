@@ -37,6 +37,7 @@ export const DatePicker: FC<Props> = ({ navigation }) => {
       noticeAlert({ message: '해당 날짜에 목록이 없습니다. 날짜를 다시 확인해주세요.' });
     } else {
       navigation.push('DailyChart', { reservationList, selectedDate });
+      
     }
   };
 
