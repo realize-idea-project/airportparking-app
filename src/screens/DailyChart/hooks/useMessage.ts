@@ -36,6 +36,26 @@ export const useMessage = () => {
     );
   };
 
+  // TODO - SendSMS.send 분리
+  const sendAdvertiseSMS = async (contactNumbers: string[], isServiceIn: boolean, cb?: () => void) => {
+    const message = '라라주차 이벤트!';
+    const formattedNumbers = contactNumbers.map(deleteDashFromContact);
+
+    await SendSMS.send(
+      {
+        body: message,
+        recipients: formattedNumbers,
+        successTypes: ['sent', 'queued'] as any,
+        allowAndroidSendWithoutReadPermission: true,
+      },
+
+      (completed, cancelled, error) => {
+        console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+        cb && cb();
+      },
+    );
+  };
+
   const sendMMS = async (contactNumber: string, message: string) => {
     if (_.isNil(image.current)) return false;
 
@@ -99,6 +119,7 @@ export const useMessage = () => {
   };
 
   return {
+    sendAdvertiseSMS,
     sendSmsByServiceType,
     getMMSPhoto,
     sendMMS,

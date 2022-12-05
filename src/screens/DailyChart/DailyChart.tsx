@@ -19,7 +19,7 @@ interface Props {
 const SERVICE_IN = true;
 
 export const DailyChart: FC<Props> = ({ navigation, route }) => {
-  const { sendMMS, sendSmsByServiceType, getMMSPhoto } = useMessage();
+  const { sendMMS, sendSmsByServiceType, getMMSPhoto, sendAdvertiseSMS } = useMessage();
   const { saveContactNumbers } = useContact();
   const { reservationList, getContactNumberByServiceType, generateContactFormat, getSelectedUserDetail } =
     useReservation(route.params);
@@ -51,6 +51,22 @@ export const DailyChart: FC<Props> = ({ navigation, route }) => {
       confirmAlert({ title, message, confirmText, onConfirm });
     }
   };
+
+  const sendAdvertiseMessage = () => {
+    if (!isLoading) {
+      showLoading();
+      const title = '<입고>';
+      const message = '입고 손님에게 광고 문자를 보내시겠습니까?' ;
+      const confirmText = '보내기';
+      const onConfirm = async () => {
+        const contactList = getContactNumberByServiceType(true);
+        await sendAdvertiseSMS(contactList, true, hideLoading);
+      };
+
+      confirmAlert({ title, message, confirmText, onConfirm });
+    }
+    
+  }
 
   const saveContactOnMobile = async () => {
     if (isLoading) return;
@@ -87,6 +103,8 @@ export const DailyChart: FC<Props> = ({ navigation, route }) => {
     }
   };
 
+  
+
   const showLoading = () => setIsLoading(true);
   const hideLoading = () => setIsLoading(false);
 
@@ -104,6 +122,7 @@ export const DailyChart: FC<Props> = ({ navigation, route }) => {
         onClickSaveContact={saveContactOnMobile}
         onClickSendServiceOutMessage={sendServiceMessageByType(!SERVICE_IN)}
         onClickSendMMS={takeMMSPhoto}
+        onClickAdvertiseSMS={sendAdvertiseMessage}
       />
       <View style={{ height: 15 }} />
       <DailyChartList list={reservationList} />

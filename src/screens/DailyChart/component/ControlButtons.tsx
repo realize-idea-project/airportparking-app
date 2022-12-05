@@ -7,6 +7,8 @@ interface Props {
   onClickSendServiceOutMessage: () => void;
   onClickSaveContact: () => void;
   onClickSendMMS: () => void;
+  onClickAdvertiseSMS: () => void;
+  
 }
 
 export const ControlButtons: FC<Props> = ({
@@ -14,13 +16,15 @@ export const ControlButtons: FC<Props> = ({
   onClickSendServiceOutMessage,
   onClickSaveContact,
   onClickSendMMS,
+  onClickAdvertiseSMS,
+
 }) => {
   return (
     <>
       <View style={styles.buttonContainer}>
         <View style={styles.space} />
         <Pressable style={styles.button} onPress={onClickSendServiceInMessage}>
-          <Text>입고 메세지 보내기</Text>
+          <Text>입고 메세지</Text>
         </Pressable>
         <View style={styles.space} />
         <Pressable style={styles.button} onPress={onClickSaveContact}>
@@ -28,13 +32,21 @@ export const ControlButtons: FC<Props> = ({
         </Pressable>
         <View style={styles.space} />
         <Pressable style={[styles.button, styles.sendToServiceOut]} onPress={onClickSendServiceOutMessage}>
-          <Text>출고 메세지 보내기</Text>
+          <Text>출고 메세지</Text>
+        </Pressable>
+        <View style={styles.space} />
+        <Pressable style={[styles.button, styles.sendToServiceOut]} onPress={onClickSendServiceOutMessage}>
+          <Text>출고 메세지</Text>
         </Pressable>
         <View style={styles.space} />
       </View>
       <View style={{ height: 15 }} />
       <View>
         <View style={styles.buttonContainer}>
+          <Pressable style={[styles.button, styles.sendAdButton, { marginLeft: 8 }]} onPress={onClickAdvertiseSMS}>
+            <Text style={styles.adText}>광고 전송</Text>
+          </Pressable>
+          <View style={styles.space} />
           <Pressable style={[styles.button, styles.sendPicButton, { marginLeft: 8 }]} onPress={onClickSendMMS}>
             <Text style={styles.sendPicButtonText}>사진 전송</Text>
           </Pressable>
@@ -58,6 +70,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 15,
+    
   },
   space: {
     width: 10,
@@ -67,6 +80,12 @@ const styles = StyleSheet.create({
   },
   sendPicButton: {
     backgroundColor: 'tomato',
+  },
+  sendAdButton: {
+    backgroundColor: '#dddddd',
+  },
+  adText: {
+    color: 'black',
   },
   sendPicButtonText: {
     fontWeight: '500',
