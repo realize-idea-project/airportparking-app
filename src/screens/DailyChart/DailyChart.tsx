@@ -45,7 +45,7 @@ export const DailyChart: FC<Props> = ({ navigation, route }) => {
       const message = isServiceIn ? '입고 손님에게 문자를 보내시겠습니까?' : '출고 손님에게 문자를 보내시겠습니까?';
       const confirmText = '보내기';
       const onConfirm = async () => {
-        const contactList = getContactNumberByServiceType(isServiceIn).filter((mobile) => !_.isEmpty(mobile));
+        const contactList = getContactNumberByServiceType(isServiceIn);
         await sendSmsByServiceType(contactList, isServiceIn, hideLoading);
       };
 

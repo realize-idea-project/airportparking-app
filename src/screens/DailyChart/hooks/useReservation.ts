@@ -10,7 +10,8 @@ export const useReservation = ({ reservationList, selectedDate }: Props) => {
   const getContactNumberByServiceType = (isServiceIn: boolean) => {
     return reservationList
       .filter((reservation) => reservation.isServiceIn === isServiceIn)
-      .map((serviceInUser) => serviceInUser.contactNumber);
+      .map((serviceInUser) => serviceInUser.contactNumber)
+      .filter((contactNumber) => !_.isEmpty(contactNumber));
   };
 
   const getSelectedUserDetail = (plateNumberHint: string) => {
