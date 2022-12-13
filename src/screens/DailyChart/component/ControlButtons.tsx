@@ -35,10 +35,7 @@ export const ControlButtons: FC<Props> = ({
           <Text>출고 메세지</Text>
         </Pressable>
         <View style={styles.space} />
-        <Pressable style={[styles.button, styles.sendToServiceOut]} onPress={onClickSendServiceOutMessage}>
-          <Text>출고 메세지</Text>
-        </Pressable>
-        <View style={styles.space} />
+        
       </View>
       <View style={{ height: 15 }} />
       <View>
