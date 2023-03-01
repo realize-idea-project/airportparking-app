@@ -66,8 +66,8 @@ const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
       <Text style={[itemStyles.row, itemStyles.carType]}>차종</Text>
       <Text style={[itemStyles.row, itemStyles.plateNumber]}>차량 번호</Text>
       <Text style={[itemStyles.row, itemStyles.contact]}>연락처</Text>
-      <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
-      <Text style={[itemStyles.row, itemStyles.note]}>비고</Text>
+      {/* <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
+      <Text style={[itemStyles.row, itemStyles.note]}>비고</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>출고일</Text>
     </View>
   );
@@ -95,8 +95,8 @@ const DailyChartItem: FC<DailyChartItemProps> = ({ item, rowNo, onLongPress }) =
       <Text style={[itemStyles.row, itemStyles.carType]}>{item.carType}</Text>
       <Text style={[itemStyles.row, itemStyles.plateNumber]}>{item.plateNumber}</Text>
       <Text style={[itemStyles.row, itemStyles.contact]}>{item.contactNumber}</Text>
-      <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text>
-      <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text>
+      {/* <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text> */}
+      {/* <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>{item.serviceEndDate}</Text>
     </Pressable>
   );
@@ -113,11 +113,13 @@ const itemStyles = StyleSheet.create({
   },
   row: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    fontSize: 18,
+    paddingVertical: 20,
+    fontSize: 24,
     borderWidth: 1,
     alignItems: 'center',
     textAlignVertical: 'center',
+    fontWeight: '600',
+    color: 'black'
   },
   rowId: {
     paddingHorizontal: 10,
@@ -126,22 +128,22 @@ const itemStyles = StyleSheet.create({
   },
   serviceType: {
     paddingHorizontal: 10,
-    width: 80,
+    width: 100,
     textAlign: 'center',
   },
   serviceTime: {
     paddingHorizontal: 10,
-    width: 80,
+    width: 100,
     textAlign: 'center',
   },
   carType: {
     width: 200,
   },
   plateNumber: {
-    width: 150,
+    width: 180,
   },
   contact: {
-    width: 180,
+    width: 240,
   },
   charge: {
     width: 150,
