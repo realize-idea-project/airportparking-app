@@ -11,6 +11,7 @@ import { LoadingSpinner } from '../../components/Spinner';
 import { useContact, useMessage, useReservation } from './hooks';
 import { DailyChartList, UserSearchModalContents, ControlButtons } from './component';
 
+
 interface Props {
   navigation: CustomNavigationType<'DailyChart', 'navigation'>;
   route: CustomNavigationType<'DailyChart', 'route'>;
@@ -104,8 +105,6 @@ export const DailyChart: FC<Props> = ({ navigation, route }) => {
     }
   };
 
-  
-
   const showLoading = () => setIsLoading(true);
   const hideLoading = () => setIsLoading(false);
 
@@ -126,7 +125,7 @@ export const DailyChart: FC<Props> = ({ navigation, route }) => {
         onClickAdvertiseSMS={sendAdvertiseMessage}
       />
       <View style={{ height: 15 }} />
-      <DailyChartList list={reservationList} />
+      <DailyChartList list={reservationList} navigation={navigation} />
 
       {isLoading && <LoadingSpinner />}
       {showModal && (

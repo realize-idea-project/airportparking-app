@@ -9,7 +9,7 @@ import { loadDailyChartList } from '../../apis';
 
 import { HeaderWithGoback } from '../../components/Header';
 import { LoadingSpinner } from '../../components/Spinner';
-import { generateReservation } from '../../shared/types/Reservation';
+import { generateReservation, Reservation } from '../../shared/types/Reservation';
 
 const delay = 1000;
 const KOREAN_MONTH = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
@@ -30,14 +30,16 @@ export const DatePicker: FC<Props> = ({ navigation }) => {
     setSelectedDate(formattedDate);
   };
 
+
+
   const clickLoadButton = async () => {
     const reservationList = await loadList(selectedDate);
+    const sortedList = reservationList.sort(sortByServiceTime);
 
-    if (_.isEmpty(reservationList)) {
+    if (_.isEmpty(sortedList)) {
       noticeAlert({ message: '해당 날짜에 목록이 없습니다. 날짜를 다시 확인해주세요.' });
     } else {
-      navigation.push('DailyChart', { reservationList, selectedDate });
-      
+      navigation.push('DailyChart', { reservationList: sortedList, selectedDate });
     }
   };
 
@@ -100,3 +102,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
+
+  // TODO: Do sort in server
+  const sortByServiceTime = (reservA: Reservation, reservB: Reservation) => {
+    const [hourA, minutesA] = reservA.serviceTime.split(':').map((time) => Number(time));
+    const [hourB, minutesB] = reservB.serviceTime.split(':').map((time) => Number(time));
+    
+    if (hourA > hourB) return 1;
+    else if (hourA < hourB) return -1;
+
+    if (minutesA > minutesB) return 1;
+    else if (minutesA < minutesB) return -1;
+    return 0;
+  };

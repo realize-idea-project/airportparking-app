@@ -29,3 +29,22 @@ export const loadDailyChartList = async (date: string): Promise<DailychartProtoc
     throw e;
   }
 };
+
+export const updateDailyChart = async (id: number, serviceTime: string) => {
+  const url = `${Config.API_URL}/dailychart`;
+  const body = JSON.stringify({ id, serviceTime });
+
+  try {
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    }); // android는 localhost 사용을 위한 설정 필요
+
+    const isSuccess = await res.json();
+    return isSuccess.isSuccess;
+  } catch (e) {
+    console.error('An error occured in updateDailyChart', e);
+    throw e;
+  }
+};

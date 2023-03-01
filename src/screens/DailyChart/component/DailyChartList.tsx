@@ -1,14 +1,33 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text, View, FlatList, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView, Alert, Pressable } from 'react-native';
 import _ from 'lodash';
+
+import { CustomNavigationType } from '../../../navigations';
 import { Reservation } from '../types';
 
 interface Props {
+  navigation: CustomNavigationType<'DailyChart', 'navigation'>;
   list: Reservation[];
 }
 
-export const DailyChartList: FC<Props> = ({ list }) => {
+export const DailyChartList: FC<Props> = ({ list, navigation }) => {
   if (_.isEmpty(list)) return null;
+
+  const showAlert = (item: Reservation, rowNo: number) => {
+    Alert.alert(
+      `${rowNo}번 예약을 수정하시겠습니까?`,
+      '', 
+      [
+        { text: '수정하기', onPress: () => goToEdit(item, rowNo) },
+        { text: '취소하기' }
+      ]
+    );
+  };
+
+  const goToEdit = (item: Reservation, rowNo: number) => {
+    navigation.push('UpdateChart', { reservation: item, rowNo });
+  };
+
 
   return (
     <>
@@ -16,7 +35,9 @@ export const DailyChartList: FC<Props> = ({ list }) => {
         <FlatList
           data={list}
           keyExtractor={(item) => item.rowCount.toString()}
-          renderItem={({ item, index }) => <DailyChartItem item={item} index={index} />}
+          renderItem={({ item, index }) => 
+            <DailyChartItem item={item} rowNo={index + 1} onLongPress={showAlert} />
+          }
           contentContainerStyle={styles.listContentContainerStyle}
           ListHeaderComponent={<DailyChartListHeader total={list.length} />}
         />
@@ -45,8 +66,8 @@ const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
       <Text style={[itemStyles.row, itemStyles.carType]}>차종</Text>
       <Text style={[itemStyles.row, itemStyles.plateNumber]}>차량 번호</Text>
       <Text style={[itemStyles.row, itemStyles.contact]}>연락처</Text>
-      <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
-      <Text style={[itemStyles.row, itemStyles.note]}>비고</Text>
+      {/* <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
+      <Text style={[itemStyles.row, itemStyles.note]}>비고</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>출고일</Text>
     </View>
   );
@@ -54,25 +75,30 @@ const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
 
 interface DailyChartItemProps {
   item: Reservation;
-  index: number;
+  rowNo: number;
+  onLongPress: (item: Reservation, rowNo: number) => void;
 }
 const EXTERNAL_CHANNEL = '티몬';
 
-const DailyChartItem: FC<DailyChartItemProps> = ({ item, index }) => {
+const DailyChartItem: FC<DailyChartItemProps> = ({ item, rowNo, onLongPress }) => {
   const serviceCharge = item.serviceCharge === 0 ? EXTERNAL_CHANNEL : withThousandSparator(item.serviceCharge);
 
+  const handleLongPress = () => {
+    onLongPress(item, rowNo);
+  };
+
   return (
-    <View style={itemStyles.itemContainer}>
-      <Text style={[itemStyles.row, itemStyles.rowId]}>{index + 1}</Text>
+    <Pressable style={itemStyles.itemContainer} onLongPress={handleLongPress}>
+      <Text style={[itemStyles.row, itemStyles.rowId]}>{rowNo}</Text>
       <Text style={[itemStyles.row, itemStyles.serviceType]}>{item.serviceType}</Text>
       <Text style={[itemStyles.row, itemStyles.serviceTime]}>{item.serviceTime}</Text>
       <Text style={[itemStyles.row, itemStyles.carType]}>{item.carType}</Text>
       <Text style={[itemStyles.row, itemStyles.plateNumber]}>{item.plateNumber}</Text>
       <Text style={[itemStyles.row, itemStyles.contact]}>{item.contactNumber}</Text>
-      <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text>
-      <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text>
+      {/* <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text> */}
+      {/* <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>{item.serviceEndDate}</Text>
-    </View>
+    </Pressable>
   );
 };
 
@@ -87,11 +113,13 @@ const itemStyles = StyleSheet.create({
   },
   row: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    fontSize: 18,
+    paddingVertical: 20,
+    fontSize: 24,
     borderWidth: 1,
     alignItems: 'center',
     textAlignVertical: 'center',
+    fontWeight: '600',
+    color: 'black'
   },
   rowId: {
     paddingHorizontal: 10,
@@ -100,22 +128,22 @@ const itemStyles = StyleSheet.create({
   },
   serviceType: {
     paddingHorizontal: 10,
-    width: 80,
+    width: 100,
     textAlign: 'center',
   },
   serviceTime: {
     paddingHorizontal: 10,
-    width: 80,
+    width: 100,
     textAlign: 'center',
   },
   carType: {
     width: 200,
   },
   plateNumber: {
-    width: 150,
+    width: 180,
   },
   contact: {
-    width: 180,
+    width: 240,
   },
   charge: {
     width: 150,
