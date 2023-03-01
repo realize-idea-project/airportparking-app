@@ -129,7 +129,7 @@ const GuideText = ({ isGuideOpened, onToggle }: { isGuideOpened: boolean, onTogg
       {isGuideOpened && (
         <>
           <Text style={styles.guideText}>1.입 / 출고 시간을 눌러주세요.</Text>
-           <Text style={styles.guideText}>2.시간을 XX:XX 형식으로 입력해주세요.</Text>
+           <Text style={styles.guideText}>2.시간을 선택해주세요.</Text>
            <Text style={styles.guideText}>3.'변경 후'칸에서 변경내용을 확인하세요.</Text>
            <Text style={styles.guideText}>4.변경하기 버튼을 눌러주세요.</Text>
         </>
@@ -201,7 +201,7 @@ const UpdateCard: FC<UpdateCardProps> = ({ item, rowNo, editedItem, onPress, sel
         ]}
       >
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>입 / 출고 시간</Text>
+          <Text style={styles.title}>입/출고 시간</Text>
         </View>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{item.serviceTime}</Text>
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     width: 130,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
   },
   selected: {
     borderWidth: 3,
