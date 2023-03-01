@@ -6,7 +6,7 @@ export const formatDate = (date: Date, digits = DATE_LENGTH_FOR_CHART) => {
 
 export const getHours = (date: Date) => {
   const hour = date.getUTCHours().toString();
-  return hour.length === 1 ? `0${hour}` : hour;
+  return hour;
 };
 
 export const getMinutes = (date: Date) => {
