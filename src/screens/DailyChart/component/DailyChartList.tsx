@@ -1,14 +1,33 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text, View, FlatList, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView, Alert, Pressable } from 'react-native';
 import _ from 'lodash';
+
+import { CustomNavigationType } from '../../../navigations';
 import { Reservation } from '../types';
 
 interface Props {
+  navigation: CustomNavigationType<'DailyChart', 'navigation'>;
   list: Reservation[];
 }
 
-export const DailyChartList: FC<Props> = ({ list }) => {
+export const DailyChartList: FC<Props> = ({ list, navigation }) => {
   if (_.isEmpty(list)) return null;
+
+  const showAlert = (item: Reservation, rowNo: number) => {
+    Alert.alert(
+      `${rowNo}번 예약을 수정하시겠습니까?`,
+      '', 
+      [
+        { text: '수정하기', onPress: () => goToEdit(item, rowNo) },
+        { text: '취소하기' }
+      ]
+    );
+  };
+
+  const goToEdit = (item: Reservation, rowNo: number) => {
+    navigation.push('UpdateChart', { reservation: item, rowNo });
+  };
+
 
   return (
     <>
@@ -16,7 +35,9 @@ export const DailyChartList: FC<Props> = ({ list }) => {
         <FlatList
           data={list}
           keyExtractor={(item) => item.rowCount.toString()}
-          renderItem={({ item, index }) => <DailyChartItem item={item} index={index} />}
+          renderItem={({ item, index }) => 
+            <DailyChartItem item={item} rowNo={index + 1} onLongPress={showAlert} />
+          }
           contentContainerStyle={styles.listContentContainerStyle}
           ListHeaderComponent={<DailyChartListHeader total={list.length} />}
         />
@@ -54,16 +75,21 @@ const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
 
 interface DailyChartItemProps {
   item: Reservation;
-  index: number;
+  rowNo: number;
+  onLongPress: (item: Reservation, rowNo: number) => void;
 }
 const EXTERNAL_CHANNEL = '티몬';
 
-const DailyChartItem: FC<DailyChartItemProps> = ({ item, index }) => {
+const DailyChartItem: FC<DailyChartItemProps> = ({ item, rowNo, onLongPress }) => {
   const serviceCharge = item.serviceCharge === 0 ? EXTERNAL_CHANNEL : withThousandSparator(item.serviceCharge);
 
+  const handleLongPress = () => {
+    onLongPress(item, rowNo);
+  };
+
   return (
-    <View style={itemStyles.itemContainer}>
-      <Text style={[itemStyles.row, itemStyles.rowId]}>{index + 1}</Text>
+    <Pressable style={itemStyles.itemContainer} onLongPress={handleLongPress}>
+      <Text style={[itemStyles.row, itemStyles.rowId]}>{rowNo}</Text>
       <Text style={[itemStyles.row, itemStyles.serviceType]}>{item.serviceType}</Text>
       <Text style={[itemStyles.row, itemStyles.serviceTime]}>{item.serviceTime}</Text>
       <Text style={[itemStyles.row, itemStyles.carType]}>{item.carType}</Text>
@@ -72,7 +98,7 @@ const DailyChartItem: FC<DailyChartItemProps> = ({ item, index }) => {
       <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text>
       <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text>
       <Text style={[itemStyles.row, itemStyles.endDate]}>{item.serviceEndDate}</Text>
-    </View>
+    </Pressable>
   );
 };
 

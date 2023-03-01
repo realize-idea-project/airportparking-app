@@ -1,6 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import DatePicker from '../screens/DatePicker';
 import DailyChart from '../screens/DailyChart';
+import UpdateChart from '../screens/UpdateDailyChart';
+
 import { Reservation } from '../shared/types/Reservation';
 
 /**
@@ -12,6 +14,7 @@ import { Reservation } from '../shared/types/Reservation';
 type NavigationStackProps = {
   DatePicker: undefined;
   DailyChart: { reservationList: Reservation[]; selectedDate: string };
+  UpdateChart: { reservation: Reservation; rowNo: number };
 };
 
 const config = {
@@ -31,6 +34,7 @@ const DailyChartNavigationDefinition = {
   routes: [
     { name: 'DatePicker', component: DatePicker, options: {} },
     { name: 'DailyChart', component: DailyChart, options: { gestureEnabled: false } },
+    { name: 'UpdateChart', component: UpdateChart, optioins: {} },
   ],
 };
 
