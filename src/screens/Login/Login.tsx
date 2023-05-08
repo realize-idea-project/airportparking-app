@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import _ from 'lodash';
+import parkinglotImage from '../../assets/parkinglot.jpg';
 
 import { login } from '../../apis';
 import { alertMessages, globalTextString } from '../DailyChart/constants';
@@ -17,12 +18,15 @@ const Login: FC<Props> = ({ navigation }) => {
 
   const clickLogin = async () => {
     try {
+      // 유효성 검사
       if (_.isNil(id) || _.isNil(pw)) {
         noticeAlert({ title: globalTextString.login, message: alertMessages.wrongIdAndPw });
         return;
       }
 
+      // api 호출
       const res = await login(id, pw);
+
       if (!res) {
         noticeAlert({ title: globalTextString.login, message: alertMessages.failLogin });
         return;
@@ -45,22 +49,28 @@ const Login: FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>아이디</Text>
+      <Image source={parkinglotImage} style={styles.background} resizeMode="contain" />
+      <View style={styles.board}>
+        <View style={{ marginBottom: 30 }}>
+          <Text style={styles.text}>주차 대행 어플 로그인</Text>
         </View>
-        <TextInput style={styles.input} onChangeText={changeId} />
-      </View>
-      <View style={styles.inputContainer}>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>비밀번호</Text>
+        <View style={styles.inputContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>아이디</Text>
+          </View>
+          <TextInput style={styles.input} onChangeText={changeId} />
         </View>
-        <TextInput style={styles.input} onChangeText={changePw} />
-      </View>
+        <View style={styles.inputContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>비밀번호</Text>
+          </View>
+          <TextInput style={styles.input} onChangeText={changePw} />
+        </View>
 
-      <Pressable style={styles.buttonContainer} onPress={clickLogin}>
-        <Text style={[styles.text, { color: 'white' }]}>로그인</Text>
-      </Pressable>
+        <Pressable style={styles.buttonContainer} onPress={clickLogin}>
+          <Text style={[styles.text, { color: 'white' }]}>로그인</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -68,6 +78,18 @@ const Login: FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  background: {
+    position: 'absolute',
+    height: '100%',
+  },
+  board: {
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    borderRadius: 10,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -89,7 +111,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: 200,
-    paddingVertical: 20,
+    paddingVertical: 10,
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',

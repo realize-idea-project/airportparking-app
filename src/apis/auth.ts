@@ -1,12 +1,12 @@
 import Config from 'react-native-config';
 
-export const login = async (id: string, password: string) => {
+export const login = async (userId: string, password: string) => {
   const url = `${Config.API_URL}/auth/login`;
 
   try {
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ id, password }),
+      body: JSON.stringify({ userId, password }),
     });
 
     const result = await response.json();
