@@ -30,8 +30,6 @@ export const DatePicker: FC<Props> = ({ navigation }) => {
     setSelectedDate(formattedDate);
   };
 
-
-
   const clickLoadButton = async () => {
     const reservationList = await loadList(selectedDate);
     const sortedList = reservationList.sort(sortByServiceTime);
@@ -45,11 +43,15 @@ export const DatePicker: FC<Props> = ({ navigation }) => {
 
   const loadList = async (date: string) => {
     if (isLoading) return [];
-
-    setIsLoading(true);
-    const list = await loadDailyChartList(date);
-    setIsLoading(false);
-    return list.map(generateReservation);
+    try {
+      setIsLoading(true);
+      const list = await loadDailyChartList(date);
+      setIsLoading(false);
+      return list.map(generateReservation);
+    } catch (err) {
+      setIsLoading(false);
+      return [];
+    }
   };
 
   const handleClickLoadButton = useCallback(_.throttle(clickLoadButton, delay), [selectedDate]);
@@ -103,15 +105,15 @@ const styles = StyleSheet.create({
   },
 });
 
-  // TODO: Do sort in server
-  const sortByServiceTime = (reservA: Reservation, reservB: Reservation) => {
-    const [hourA, minutesA] = reservA.serviceTime.split(':').map((time) => Number(time));
-    const [hourB, minutesB] = reservB.serviceTime.split(':').map((time) => Number(time));
-    
-    if (hourA > hourB) return 1;
-    else if (hourA < hourB) return -1;
+// TODO: Do sort in server
+const sortByServiceTime = (reservA: Reservation, reservB: Reservation) => {
+  const [hourA, minutesA] = reservA.serviceTime.split(':').map((time) => Number(time));
+  const [hourB, minutesB] = reservB.serviceTime.split(':').map((time) => Number(time));
 
-    if (minutesA > minutesB) return 1;
-    else if (minutesA < minutesB) return -1;
-    return 0;
-  };
+  if (hourA > hourB) return 1;
+  else if (hourA < hourB) return -1;
+
+  if (minutesA > minutesB) return 1;
+  else if (minutesA < minutesB) return -1;
+  return 0;
+};

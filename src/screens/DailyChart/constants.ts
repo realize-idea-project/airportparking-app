@@ -5,6 +5,8 @@ export const alertMessages = {
   sendServiceInMessage: '입고 손님에게 문자를 보내시겠습니까?',
   sendServiceOutMessageTitle: '<출고>',
   sendServiceOutMessage: '출고 손님에게 문자를 보내시겠습니까?',
+  failLogin: '로그인에 실패하였습니다. 다시 시도해주세요.',
+  wrongIdAndPw: '아이디와 비밀번호를 입력해주세요.',
 };
 
 export const SmsMessage = {
@@ -15,6 +17,7 @@ export const SmsMessage = {
 export const globalTextString = {
   cancel: '취소',
   send: '보내기',
+  login: '로그인',
 };
 
 export const SERVICE_IN = '입고';

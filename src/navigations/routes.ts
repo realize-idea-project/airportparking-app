@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import DatePicker from '../screens/DatePicker';
 import DailyChart from '../screens/DailyChart';
 import UpdateChart from '../screens/UpdateDailyChart';
+import Login from '../screens/Login/Login';
 
 import { Reservation } from '../shared/types/Reservation';
 
@@ -15,6 +16,7 @@ type NavigationStackProps = {
   DatePicker: undefined;
   DailyChart: { reservationList: Reservation[]; selectedDate: string };
   UpdateChart: { reservation: Reservation; rowNo: number };
+  Login: undefined;
 };
 
 const config = {
@@ -29,16 +31,21 @@ const config = {
   },
 };
 
+const AuthNavigationDefinition = {
+  id: 'Auth',
+  routes: [{ name: 'Login', component: Login, options: {} }],
+};
+
 const DailyChartNavigationDefinition = {
   id: 'DailyChart',
   routes: [
     { name: 'DatePicker', component: DatePicker, options: {} },
     { name: 'DailyChart', component: DailyChart, options: { gestureEnabled: false } },
-    { name: 'UpdateChart', component: UpdateChart, optioins: {} },
+    { name: 'UpdateChart', component: UpdateChart, options: {} },
   ],
 };
 
-export const navigationDefinitions = [DailyChartNavigationDefinition];
+export const navigationDefinitions = [DailyChartNavigationDefinition, AuthNavigationDefinition];
 export type CustomNavigationType<
   T extends keyof NavigationStackProps,
   M extends 'navigation' | 'route',
