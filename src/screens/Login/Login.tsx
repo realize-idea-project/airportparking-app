@@ -7,6 +7,7 @@ import { login } from '../../apis';
 import { alertMessages, globalTextString } from '../DailyChart/constants';
 import { noticeAlert } from '../../utils';
 import { CustomNavigationType } from '../../navigations';
+import { LoadingSpinner } from '../../components/Spinner';
 
 interface Props {
   navigation: CustomNavigationType<'DatePicker', 'navigation'>;
@@ -15,6 +16,7 @@ interface Props {
 const Login: FC<Props> = ({ navigation }) => {
   const [id, setId] = useState<string>();
   const [pw, setPw] = useState<string>();
+  const [showLoading, setShowLoading] = useState(false);
 
   const clickLogin = async () => {
     try {
@@ -25,7 +27,9 @@ const Login: FC<Props> = ({ navigation }) => {
       }
 
       // api 호출
+      setShowLoading(true);
       const res = await login(id, pw);
+      setShowLoading(false);
 
       if (!res) {
         noticeAlert({ title: globalTextString.login, message: alertMessages.failLogin });
@@ -48,30 +52,33 @@ const Login: FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={parkinglotImage} style={styles.background} resizeMode="contain" />
-      <View style={styles.board}>
-        <View style={{ marginBottom: 30 }}>
-          <Text style={styles.text}>주차 대행 어플 로그인</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <View style={styles.textContainer}>
-            <Text style={styles.text}>아이디</Text>
+    <>
+      <View style={styles.container}>
+        <Image source={parkinglotImage} style={styles.background} resizeMode="contain" />
+        <View style={styles.board}>
+          <View style={{ marginBottom: 30 }}>
+            <Text style={styles.text}>주차 대행 어플 로그인</Text>
           </View>
-          <TextInput style={styles.input} onChangeText={changeId} />
-        </View>
-        <View style={styles.inputContainer}>
-          <View style={styles.textContainer}>
-            <Text style={styles.text}>비밀번호</Text>
+          <View style={styles.inputContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.text}>아이디</Text>
+            </View>
+            <TextInput style={styles.input} onChangeText={changeId} />
           </View>
-          <TextInput style={styles.input} onChangeText={changePw} />
-        </View>
+          <View style={styles.inputContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.text}>비밀번호</Text>
+            </View>
+            <TextInput style={styles.input} onChangeText={changePw} />
+          </View>
 
-        <Pressable style={styles.buttonContainer} onPress={clickLogin}>
-          <Text style={[styles.text, { color: 'white' }]}>로그인</Text>
-        </Pressable>
+          <Pressable style={styles.buttonContainer} onPress={clickLogin}>
+            <Text style={[styles.text, { color: 'white' }]}>로그인</Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+      {showLoading && <LoadingSpinner />}
+    </>
   );
 };
 

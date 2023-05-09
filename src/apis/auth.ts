@@ -7,14 +7,15 @@ export const login = async (userId: string, password: string) => {
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ userId, password }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     const result = await response.json();
-
-    console.log('result', result);
-    return result;
+    return result.isSuccess;
   } catch (e) {
     console.error('An error occurred in login', e);
-    throw e;
+    // throw e;
   }
 };
