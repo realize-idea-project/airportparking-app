@@ -39,6 +39,7 @@ export const checkIsLoggedIn = async () => {
       },
     });
     const { isSuccess, data } = await response.json();
+    if (!isSuccess) await removeSessionId();
 
     return { isSuccess, data };
   } catch (e) {
