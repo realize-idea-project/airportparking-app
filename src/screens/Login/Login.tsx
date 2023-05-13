@@ -7,29 +7,30 @@ import { noticeAlert } from '../../utils';
 import { CustomNavigationType } from '../../navigations';
 import { LoadingSpinner } from '../../components/Spinner';
 import { getAlertText, handleLogin } from './loginHelper';
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../../recoils';
 
 interface Props {
   navigation: CustomNavigationType<'DatePicker', 'navigation'>;
 }
 
 const Login: FC<Props> = ({ navigation }) => {
+  const setUser = useSetRecoilState(userState);
   const [id, setId] = useState<string>();
   const [pw, setPw] = useState<string>();
   const [showLoading, setShowLoading] = useState(false);
 
   const clickLogin = async () => {
     setShowLoading(true);
-    const result = await handleLogin(id, pw);
+    const { state, data } = await handleLogin(id, pw);
     setShowLoading(false);
 
-    const alertContent = getAlertText(result);
-
-    if (!_.isNil(alertContent)) {
-      noticeAlert(alertContent);
-      return;
+    if (state === 'success') {
+      setUser(data);
+      navigation.replace('DatePicker');
     }
 
-    navigation.replace('DatePicker');
+    noticeAlert(getAlertText(state));
   };
 
   const changeId = (text: string) => {
