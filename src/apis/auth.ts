@@ -16,11 +16,13 @@ export const login = async (userId: string, password: string) => {
     });
 
     const { isSuccess, data } = await response.json();
+
     if (isSuccess) saveSessionId(response);
 
-    return isSuccess;
+    return { isSuccess, data };
   } catch (e) {
     console.error('An error occurred in login', e);
+    return { isSuccess: false };
     // throw e;
   }
 };

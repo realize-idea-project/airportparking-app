@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import _ from 'lodash';
 import parkinglotImage from '../../assets/parkinglot.jpg';
 
@@ -25,12 +25,18 @@ const Login: FC<Props> = ({ navigation }) => {
     const { state, data } = await handleLogin(id, pw);
     setShowLoading(false);
 
-    if (state === 'success') {
-      setUser(data);
-      navigation.replace('DatePicker');
+    if (state !== 'success') {
+      noticeAlert(getAlertText(state));
+      return;
     }
 
-    noticeAlert(getAlertText(state));
+    if (!data?.isActive) {
+      navigation.replace('InactiveUser');
+      return;
+    }
+
+    setUser(data);
+    navigation.replace('DatePicker');
   };
 
   const changeId = (text: string) => {
