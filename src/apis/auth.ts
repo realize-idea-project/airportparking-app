@@ -15,7 +15,7 @@ export const login = async (userId: string, password: string) => {
       },
     });
 
-    const { isSuccess } = await response.json();
+    const { isSuccess, data } = await response.json();
     if (isSuccess) saveSessionId(response);
 
     return isSuccess;
@@ -36,15 +36,16 @@ export const checkIsLoggedIn = async () => {
         Cookie: sessionId,
       },
     });
-    const { isSuccess } = await response.json();
+    const { isSuccess, data } = await response.json();
 
-    return isSuccess;
+    return { isSuccess, data };
   } catch (e) {
     // currently app and admin rely on the same server
     // so that it doesn't handle well when login fail.
     // when this api call fail always occur an error
     console.error('An error occurred in login', e);
-    return false;
+    await removeSessionId();
+    return { isSuccess: false };
   }
 };
 
@@ -56,4 +57,8 @@ const saveSessionId = async (response: Response) => {
 const getSessionId = async () => {
   const id = await getData(STORAGE_KEY.login);
   return id;
+};
+
+const removeSessionId = async () => {
+  await deleteData(STORAGE_KEY.login);
 };

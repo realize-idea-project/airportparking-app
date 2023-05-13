@@ -3,20 +3,35 @@ import _ from 'lodash';
 import { login } from '../../apis';
 import { alertMessages, globalTextString } from '../DailyChart/constants';
 
-export type LoginResult = 'success' | 'fail' | 'error' | 'invalid';
+export type LoginState = 'success' | 'fail' | 'error' | 'invalid';
+
+interface LoginResult {
+  state: LoginState;
+  data?: any;
+}
 
 export const handleLogin = async (id?: string, pw?: string): Promise<LoginResult> => {
   try {
-    if (_.isNil(id) || _.isNil(pw)) return 'invalid';
+    if (_.isNil(id) || _.isNil(pw)) {
+      return { state: 'invalid' };
+    }
 
-    const isSuccess = await login(id, pw);
-    return isSuccess ? 'success' : 'fail';
+    const { isSuccess, data } = await login(id, pw);
+
+    if (!isSuccess || _.isNil(data)) {
+      return { state: 'fail' };
+    }
+
+    return {
+      state: 'success',
+      data,
+    };
   } catch (err) {
-    return 'error';
+    return { state: 'error' };
   }
 };
 
-export const getAlertText = (result: LoginResult) => {
+export const getAlertText = (result: LoginState) => {
   switch (result) {
     case 'invalid':
       return { title: globalTextString.login, message: alertMessages.wrongIdAndPw };
@@ -25,6 +40,6 @@ export const getAlertText = (result: LoginResult) => {
     case 'error':
       return { title: globalTextString.login, message: alertMessages.failLogin };
     default:
-      return null;
+      return { title: globalTextString.login, message: alertMessages.failLogin };
   }
 };
