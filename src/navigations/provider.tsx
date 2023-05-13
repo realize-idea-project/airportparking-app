@@ -10,7 +10,7 @@ const AppNavigation = {
   Stack: createNativeStackNavigator(),
   navigatorOptions: {
     screenOptions: { headerShown: false },
-    initialRouteName: 'Login',
+    initialRouteName: 'AppStart',
   },
   routes: _.flatMap(navigationDefinitions, ({ routes }) => routes),
 };

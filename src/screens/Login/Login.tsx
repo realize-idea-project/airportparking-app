@@ -3,11 +3,10 @@ import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, Vi
 import _ from 'lodash';
 import parkinglotImage from '../../assets/parkinglot.jpg';
 
-import { login } from '../../apis';
-import { alertMessages, globalTextString } from '../DailyChart/constants';
 import { noticeAlert } from '../../utils';
 import { CustomNavigationType } from '../../navigations';
 import { LoadingSpinner } from '../../components/Spinner';
+import { getAlertText, handleLogin } from './loginHelper';
 
 interface Props {
   navigation: CustomNavigationType<'DatePicker', 'navigation'>;
@@ -19,28 +18,18 @@ const Login: FC<Props> = ({ navigation }) => {
   const [showLoading, setShowLoading] = useState(false);
 
   const clickLogin = async () => {
-    try {
-      // 유효성 검사
-      if (_.isNil(id) || _.isNil(pw)) {
-        noticeAlert({ title: globalTextString.login, message: alertMessages.wrongIdAndPw });
-        return;
-      }
+    setShowLoading(true);
+    const result = await handleLogin(id, pw);
+    setShowLoading(false);
 
-      // api 호출
-      setShowLoading(true);
-      const res = await login(id, pw);
-      setShowLoading(false);
+    const alertContent = getAlertText(result);
 
-      if (!res) {
-        noticeAlert({ title: globalTextString.login, message: alertMessages.failLogin });
-        return;
-      }
-
-      navigation.replace('DatePicker');
-    } catch (e) {
-      console.error(e);
-      noticeAlert({ title: globalTextString.login, message: alertMessages.failLogin });
+    if (!_.isNil(alertContent)) {
+      noticeAlert(alertContent);
+      return;
     }
+
+    navigation.replace('DatePicker');
   };
 
   const changeId = (text: string) => {

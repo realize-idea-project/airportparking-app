@@ -2,7 +2,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import DatePicker from '../screens/DatePicker';
 import DailyChart from '../screens/DailyChart';
 import UpdateChart from '../screens/UpdateDailyChart';
-import Login from '../screens/Login/Login';
+import Login from '../screens/Login';
+import AppStart from '../screens/AppStart/AppStart';
 
 import { Reservation } from '../shared/types/Reservation';
 
@@ -17,6 +18,7 @@ type NavigationStackProps = {
   DailyChart: { reservationList: Reservation[]; selectedDate: string };
   UpdateChart: { reservation: Reservation; rowNo: number };
   Login: undefined;
+  AppStart: undefined;
 };
 
 const config = {
@@ -33,7 +35,10 @@ const config = {
 
 const AuthNavigationDefinition = {
   id: 'Auth',
-  routes: [{ name: 'Login', component: Login, options: {} }],
+  routes: [
+    { name: 'Login', component: Login, options: {} },
+    { name: 'AppStart', component: AppStart, options: {} },
+  ],
 };
 
 const DailyChartNavigationDefinition = {
