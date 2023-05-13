@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import { CustomNavigationType } from '../../navigations';
 import { checkIsLoggedIn } from '../../apis/auth';
+import { LoadingSpinner } from '../../components/Spinner';
 
 interface Props {
   navigation: CustomNavigationType<'AppStart', 'navigation'>;
@@ -23,7 +24,7 @@ const AppStart: FC<Props> = ({ navigation }) => {
     }
   }, [isLoggedIn]);
 
-  return null;
+  return <LoadingSpinner />;
 };
 
 export default AppStart;
