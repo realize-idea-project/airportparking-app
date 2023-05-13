@@ -16,7 +16,7 @@ export interface Reservation {
   isServiceIn: boolean; // is 입고?
 }
 
-const SERVICE_IN = '입고';
+const SERVICE_IN = 'I';
 
 export const generateReservation = (protocol: DailychartProtocol): Reservation => {
   const { id, serviceType, ...rest } = protocol;
@@ -26,7 +26,7 @@ export const generateReservation = (protocol: DailychartProtocol): Reservation =
   return {
     ...rest,
     rowCount: id,
-    serviceType,
+    serviceType: isServiceIn ? '입고' : '출고',
     isServiceIn,
   };
 };
