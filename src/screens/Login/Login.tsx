@@ -25,12 +25,13 @@ const Login: FC<Props> = ({ navigation }) => {
     const { state, data } = await handleLogin(id, pw);
     setShowLoading(false);
 
-    if (state === 'success') {
-      setUser(data);
-      navigation.replace('DatePicker');
+    if (state !== 'success') {
+      noticeAlert(getAlertText(state));
+      return;
     }
 
-    noticeAlert(getAlertText(state));
+    setUser(data);
+    navigation.replace('DatePicker');
   };
 
   const changeId = (text: string) => {
