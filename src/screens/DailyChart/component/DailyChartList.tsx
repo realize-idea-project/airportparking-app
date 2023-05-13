@@ -14,20 +14,15 @@ export const DailyChartList: FC<Props> = ({ list, navigation }) => {
   if (_.isEmpty(list)) return null;
 
   const showAlert = (item: Reservation, rowNo: number) => {
-    Alert.alert(
-      `${rowNo}번 예약을 수정하시겠습니까?`,
-      '', 
-      [
-        { text: '수정하기', onPress: () => goToEdit(item, rowNo) },
-        { text: '취소하기' }
-      ]
-    );
+    Alert.alert(`${rowNo}번 예약을 수정하시겠습니까?`, '', [
+      { text: '수정하기', onPress: () => goToEdit(item, rowNo) },
+      { text: '취소하기' },
+    ]);
   };
 
   const goToEdit = (item: Reservation, rowNo: number) => {
     navigation.push('UpdateChart', { reservation: item, rowNo });
   };
-
 
   return (
     <>
@@ -35,9 +30,7 @@ export const DailyChartList: FC<Props> = ({ list, navigation }) => {
         <FlatList
           data={list}
           keyExtractor={(item) => item.rowCount.toString()}
-          renderItem={({ item, index }) => 
-            <DailyChartItem item={item} rowNo={index + 1} onLongPress={showAlert} />
-          }
+          renderItem={({ item, index }) => <DailyChartItem item={item} rowNo={index + 1} onLongPress={showAlert} />}
           contentContainerStyle={styles.listContentContainerStyle}
           ListHeaderComponent={<DailyChartListHeader total={list.length} />}
         />
@@ -84,7 +77,7 @@ const DailyChartItem: FC<DailyChartItemProps> = ({ item, rowNo, onLongPress }) =
   const serviceCharge = item.serviceCharge === 0 ? EXTERNAL_CHANNEL : withThousandSparator(item.serviceCharge);
 
   const handleLongPress = () => {
-    onLongPress(item, rowNo);
+    // onLongPress(item, rowNo);
   };
 
   return (
@@ -119,7 +112,7 @@ const itemStyles = StyleSheet.create({
     alignItems: 'center',
     textAlignVertical: 'center',
     fontWeight: '600',
-    color: 'black'
+    color: 'black',
   },
   rowId: {
     paddingHorizontal: 10,
