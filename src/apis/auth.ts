@@ -16,7 +16,7 @@ export const login = async (userId: string, password: string) => {
     });
 
     const { isSuccess, data } = await response.json();
-    console.log('data', data);
+
     if (isSuccess) saveSessionId(response);
 
     return { isSuccess, data };
