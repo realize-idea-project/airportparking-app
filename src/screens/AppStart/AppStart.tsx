@@ -19,7 +19,7 @@ const AppStart: FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     if (!_.isUndefined(isLoggedIn)) {
-      navigation.navigate(isLoggedIn ? 'DatePicker' : 'Login');
+      navigation.replace(isLoggedIn ? 'DatePicker' : 'Login');
     }
   }, [isLoggedIn]);
 

@@ -5,7 +5,7 @@ import { STORAGE_KEY, storeData, getData, deleteData } from '../shared/storage';
 
 export const login = async (userId: string, password: string) => {
   const url = `${Config.API_URL}/auth/login/app`;
-  await deleteData(STORAGE_KEY.login);
+
   try {
     const response = await fetch(url, {
       method: 'POST',
