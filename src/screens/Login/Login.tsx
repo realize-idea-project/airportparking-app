@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import _ from 'lodash';
 import parkinglotImage from '../../assets/parkinglot.jpg';
 
@@ -27,6 +27,11 @@ const Login: FC<Props> = ({ navigation }) => {
 
     if (state !== 'success') {
       noticeAlert(getAlertText(state));
+      return;
+    }
+
+    if (!data?.isActive) {
+      navigation.replace('InactiveUser');
       return;
     }
 

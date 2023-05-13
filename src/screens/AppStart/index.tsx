@@ -18,7 +18,8 @@ const AppStart: FC<Props> = ({ navigation }) => {
   useEffect(() => {
     checkIsLoggedIn()
       .then(({ isSuccess, data }) => {
-        setIsLoggedIn(isSuccess);
+        const isActiveUser = data?.isActive;
+        setIsLoggedIn(isSuccess && isActiveUser);
         setUser(data);
       })
       .catch(({ isSuccess }) => {

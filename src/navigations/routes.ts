@@ -3,7 +3,8 @@ import DatePicker from '../screens/DatePicker';
 import DailyChart from '../screens/DailyChart';
 import UpdateChart from '../screens/UpdateDailyChart';
 import Login from '../screens/Login';
-import AppStart from '../screens/AppStart/AppStart';
+import AppStart from '../screens/AppStart';
+import InactiveUser from '../screens/InactiveUser';
 
 import { Reservation } from '../shared/types/Reservation';
 
@@ -19,6 +20,7 @@ type NavigationStackProps = {
   UpdateChart: { reservation: Reservation; rowNo: number };
   Login: undefined;
   AppStart: undefined;
+  InactiveUser: undefined;
 };
 
 const config = {
@@ -38,6 +40,7 @@ const AuthNavigationDefinition = {
   routes: [
     { name: 'Login', component: Login, options: {} },
     { name: 'AppStart', component: AppStart, options: {} },
+    { name: 'InactiveUser', component: InactiveUser, options: {} },
   ],
 };
 
