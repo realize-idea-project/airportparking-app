@@ -14,20 +14,15 @@ export const DailyChartList: FC<Props> = ({ list, navigation }) => {
   if (_.isEmpty(list)) return null;
 
   const showAlert = (item: Reservation, rowNo: number) => {
-    Alert.alert(
-      `${rowNo}번 예약을 수정하시겠습니까?`,
-      '', 
-      [
-        { text: '수정하기', onPress: () => goToEdit(item, rowNo) },
-        { text: '취소하기' }
-      ]
-    );
+    Alert.alert(`${rowNo}번 예약을 수정하시겠습니까?`, '', [
+      { text: '수정하기', onPress: () => goToEdit(item, rowNo) },
+      { text: '취소하기' },
+    ]);
   };
 
   const goToEdit = (item: Reservation, rowNo: number) => {
     navigation.push('UpdateChart', { reservation: item, rowNo });
   };
-
 
   return (
     <>
@@ -35,9 +30,7 @@ export const DailyChartList: FC<Props> = ({ list, navigation }) => {
         <FlatList
           data={list}
           keyExtractor={(item) => item.rowCount.toString()}
-          renderItem={({ item, index }) => 
-            <DailyChartItem item={item} rowNo={index + 1} onLongPress={showAlert} />
-          }
+          renderItem={({ item, index }) => <DailyChartItem item={item} rowNo={index + 1} onLongPress={showAlert} />}
           contentContainerStyle={styles.listContentContainerStyle}
           ListHeaderComponent={<DailyChartListHeader total={list.length} />}
         />
@@ -66,8 +59,8 @@ const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
       <Text style={[itemStyles.row, itemStyles.carType]}>차종</Text>
       <Text style={[itemStyles.row, itemStyles.plateNumber]}>차량 번호</Text>
       <Text style={[itemStyles.row, itemStyles.contact]}>연락처</Text>
-      {/* <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
-      <Text style={[itemStyles.row, itemStyles.note]}>비고</Text> */}
+      <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
+      {/* <Text style={[itemStyles.row, itemStyles.note]}>비고</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>출고일</Text>
     </View>
   );
@@ -95,7 +88,7 @@ const DailyChartItem: FC<DailyChartItemProps> = ({ item, rowNo, onLongPress }) =
       <Text style={[itemStyles.row, itemStyles.carType]}>{item.carType}</Text>
       <Text style={[itemStyles.row, itemStyles.plateNumber]}>{item.plateNumber}</Text>
       <Text style={[itemStyles.row, itemStyles.contact]}>{item.contactNumber}</Text>
-      {/* <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text> */}
+      <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text>
       {/* <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>{item.serviceEndDate}</Text>
     </Pressable>
@@ -113,13 +106,13 @@ const itemStyles = StyleSheet.create({
   },
   row: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
-    fontSize: 24,
+    paddingVertical: 16,
+    fontSize: 21,
     borderWidth: 1,
     alignItems: 'center',
     textAlignVertical: 'center',
     fontWeight: '600',
-    color: 'black'
+    color: 'black',
   },
   rowId: {
     paddingHorizontal: 10,
@@ -133,26 +126,26 @@ const itemStyles = StyleSheet.create({
   },
   serviceTime: {
     paddingHorizontal: 10,
-    width: 100,
+    width: 80,
     textAlign: 'center',
   },
   carType: {
-    width: 200,
-  },
-  plateNumber: {
     width: 180,
   },
+  plateNumber: {
+    width: 160,
+  },
   contact: {
-    width: 240,
+    width: 200,
   },
   charge: {
-    width: 150,
+    width: 130,
   },
   note: {
     width: 80,
   },
   endDate: {
-    width: 120,
+    width: 100,
     textAlign: 'center',
   },
   headerColor: {
