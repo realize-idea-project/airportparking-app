@@ -62,6 +62,7 @@ const DailyChartListHeader: FC<HeaderProps> = ({ total }) => {
       <Text style={[itemStyles.row, itemStyles.charge]}>금액</Text>
       {/* <Text style={[itemStyles.row, itemStyles.note]}>비고</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>출고일</Text>
+      <Text style={[itemStyles.row, itemStyles.endAt]}>출고시간</Text>
     </View>
   );
 };
@@ -91,6 +92,7 @@ const DailyChartItem: FC<DailyChartItemProps> = ({ item, rowNo, onLongPress }) =
       <Text style={[itemStyles.row, itemStyles.charge]}>{serviceCharge}</Text>
       {/* <Text style={[itemStyles.row, itemStyles.note]}>{item.note}</Text> */}
       <Text style={[itemStyles.row, itemStyles.endDate]}>{item.serviceEndDate}</Text>
+      <Text style={[itemStyles.row, itemStyles.endAt]}>{item.serviceEndAt}</Text>
     </Pressable>
   );
 };
@@ -147,6 +149,9 @@ const itemStyles = StyleSheet.create({
   endDate: {
     width: 100,
     textAlign: 'center',
+  },
+  endAt: {
+    width: 120,
   },
   headerColor: {
     backgroundColor: '#dddddd',
