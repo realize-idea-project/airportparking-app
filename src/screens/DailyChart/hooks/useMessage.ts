@@ -16,7 +16,7 @@ export const useMessage = () => {
 
   const sendSmsByServiceType = async (contactNumbers: string[], isServiceIn: boolean, cb?: () => void) => {
     const message = isServiceIn
-      ? '김포공항 주차대행 입니다 국내선 출발 2층 1번 게이트로 오세요 도착 10분전에 전화주세요'
+      ? '김포공항 주차대행 입니다 국내선 출발 2층 2번 게이트로 오세요 도착 20분전에 전화주세요'
       : '김포공항 주차대행 입니다';
 
     const formattedNumbers = contactNumbers.map(deleteDashFromContact);
